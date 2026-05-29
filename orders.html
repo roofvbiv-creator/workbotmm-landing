@@ -1410,7 +1410,8 @@
       const photoEl = document.getElementById('productImg');
       if (photoEl && data.photo) {
         const photoPath = data.photo.split('https://api.telegram.org/')[1];
-        photoEl.src = 'https://worker-production-740e.up.railway.app/photo/' + photoPath;
+        const encodedPath = encodeURIComponent(photoPath);
+        photoEl.src = 'https://worker-production-740e.up.railway.app/photo/' + encodedPath;
         photoEl.style.display = 'block';
         const placeholder = document.getElementById('productImgPlaceholder');
         if (placeholder) placeholder.style.display = 'none';
