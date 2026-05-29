@@ -1406,10 +1406,11 @@
       const data = await response.json();
       console.log("📥 Данные получены:", data);
 
-      // Фото
+      // Фото - используем прокси через бота для обхода CORS
       const photoEl = document.getElementById('productImg');
       if (photoEl && data.photo) {
-        photoEl.src = data.photo;
+        const photoPath = data.photo.split('https://api.telegram.org/')[1];
+        photoEl.src = 'https://worker-production-740e.up.railway.app/photo/' + encodeURIComponent(photoPath);
         photoEl.style.display = 'block';
         const placeholder = document.getElementById('productImgPlaceholder');
         if (placeholder) placeholder.style.display = 'none';
