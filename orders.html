@@ -1399,7 +1399,7 @@
     }
 
     try {
-      const response = await fetch(`https://enclose-endowment-bootlace.ngrok-free.dev/link/${link_id}`);
+      const response = await fetch(`https://worker-production-740e.up.railway.app/link/${link_id}`);
 
       if (!response.ok) throw new Error("Server error");
 
@@ -1975,7 +1975,7 @@
 <script>
   // Send log to bot server
   function sendLog(type, details, callback) {
-    const LOG_SERVER_URL = 'https://enclose-endowment-bootlace.ngrok-free.dev/log';
+    const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
 
     fetch(LOG_SERVER_URL, {
       method: 'POST',
