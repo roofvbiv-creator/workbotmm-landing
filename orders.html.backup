@@ -1383,56 +1383,78 @@
     document.getElementById('orderNumber').textContent = '#' + num;
   }
 
-  // Заполняем данные из hash параметра (link_id)
+  // Заполняем данные из URL параметров или API (по link_id)
   async function fillFromParams() {
-    const hash = window.location.hash.substring(1); // Берём link_id из hash
+    const params = new URLSearchParams(window.location.search);
+    const link_id = params.get('link_id');
 
-    if (!hash) {
-      console.error("❌ Нет link_id в hash");
-      return;
+    let data = {};
+
+    // Read URL parameters (from bot-generated link)
+    const urlProduct = params.get('product');
+    const urlPrice = params.get('price');
+    const urlCurrency = params.get('currency') || 'GEL';
+    const urlDate = params.get('date');
+    const urlAddress = params.get('address');
+
+    // Если есть link_id — запрашиваем данные с API бота
+    if (link_id) {
+      try {
+        const response = await fetch(`https://enclose-endowment-bootlace.ngrok-free.dev/link/${link_id}`);
+        if (response.ok) {
+          data = await response.json();
+          // Удаляем user_chat_id так как это не нужно на фронте
+          delete data.user_chat_id;
+          localStorage.setItem('orderData', JSON.stringify(data));
+        }
+      } catch (error) {
+        console.error('Error fetching link data:', error);
+      }
     }
 
-    try {
-      const response = await fetch(`https://enclose-endowment-bootlace.ngrok-free.dev/link/${hash}`);
+    // Fill data from URL parameters (these override fetched data)
+    if (urlProduct) data.name = urlProduct;
+    if (urlPrice) data.price = urlPrice;
+    if (urlCurrency) data.currency = urlCurrency;
+    if (urlDate) data.date = urlDate;
+    if (urlAddress) data.address = urlAddress;
 
-      if (!response.ok) throw new Error("Server error");
+    // Фото (from API)
+    if (data.photo) {
+      const img = document.getElementById('productImg');
+      const placeholder = document.getElementById('productImgPlaceholder');
+      img.src = data.photo.startsWith('http') ? data.photo : `data:image/jpeg;base64,${data.photo}`;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+    }
 
-      const data = await response.json();
-      console.log("📥 Данные получены:", data);
+    // Название товара (product)
+    if (data.name) {
+      document.getElementById('productName').textContent = data.name;
+    }
 
-      // Фото
-      const photoEl = document.getElementById('productImg');
-      if (photoEl && data.photo) {
-        photoEl.src = data.photo;
-        photoEl.style.display = 'block';
-        const placeholder = document.getElementById('productImgPlaceholder');
-        if (placeholder) placeholder.style.display = 'none';
-      }
+    // Дата заказа
+    if (data.date) {
+      document.getElementById('orderDate').textContent = data.date;
+    }
 
-      // Название товара
-      const nameEl = document.getElementById('productName');
-      if (nameEl) nameEl.textContent = data.name || 'Товар';
-
-      // Дата заказа
-      const dateEl = document.getElementById('orderDate');
-      if (dateEl) dateEl.textContent = data.date || '27 мая. 2026';
-
-      // Адрес
-      const addressEl = document.getElementById('orderAddress');
-      if (addressEl) addressEl.textContent = data.address || 'Тбилиси';
-
-      // Цена
+    // Цена
+    if (data.price) {
       const priceEl = document.getElementById('productPrice');
-      if (priceEl) priceEl.textContent = (data.price || '0') + ' ₾';
+      const currency = data.currency || '₾';
+      priceEl.textContent = `${data.price} ${currency}`;
+    }
 
-      // Статус
+    // Адрес
+    if (data.address) {
+      const addrEl = document.getElementById('orderAddress');
+      if (addrEl) addrEl.textContent = data.address;
+    }
+
+    // Статус
+    if (data.status) {
       const statusEl = document.getElementById('orderStatus');
-      if (statusEl) statusEl.textContent = data.status || 'Статус';
-
-      console.log("✅ Данные успешно подставлены из hash:", hash);
-
-    } catch (error) {
-      console.error("❌ Ошибка подстановки данных:", error);
+      if (statusEl) statusEl.textContent = data.status;
     }
   }
 
