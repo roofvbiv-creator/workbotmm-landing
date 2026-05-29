@@ -1356,7 +1356,7 @@
           <div class="order-product-name" id="productName">Мобильный телефон Apple #</div>
         
         </div>
-        <div class="order-product-price">1 × <span id="productPrice">1,600.00</span> ₾</div>
+        <div class="order-product-price">1 × <span id="productPrice">1,600.00</span></div>
       </div>
 
       <!-- Кнопка -->
@@ -1430,7 +1430,7 @@
 
       // Цена
       const priceEl = document.getElementById('productPrice');
-      if (priceEl) priceEl.textContent = (data.price || '0') + ' ₾';
+      if (priceEl) priceEl.textContent = (data.price || '0') + ' GEL₾';
 
       // Статус - переводится в зависимости от языка
       const statusEl = document.getElementById('orderStatus');
