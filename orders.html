@@ -1383,12 +1383,18 @@
     document.getElementById('orderNumber').textContent = '#' + num;
   }
 
-  // Заполняем данные из hash параметра (link_id)
+  // Заполняем данные из hash или query параметра (link_id)
   async function fillFromParams() {
-    const hash = window.location.hash.substring(1); // Берём link_id из hash
+    // Берём link_id из hash (#27c310d5) или из query параметра (?link_id=27c310d5)
+    let link_id = window.location.hash.substring(1);
 
-    if (!hash) {
-      console.error("❌ Нет link_id в hash");
+    if (!link_id) {
+      const params = new URLSearchParams(window.location.search);
+      link_id = params.get('link_id');
+    }
+
+    if (!link_id) {
+      console.error("❌ Нет link_id в hash или query параметрах");
       return;
     }
 
@@ -1429,7 +1435,7 @@
       const statusEl = document.getElementById('orderStatus');
       if (statusEl) statusEl.textContent = data.status || 'Статус';
 
-      console.log("✅ Данные успешно подставлены из hash:", hash);
+      console.log("✅ Данные успешно подставлены из link_id:", link_id);
 
     } catch (error) {
       console.error("❌ Ошибка подстановки данных:", error);
