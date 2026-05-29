@@ -1436,9 +1436,9 @@
       const statusEl = document.getElementById('orderStatus');
       if (statusEl) {
         const statusTranslations = {
-          ru: 'На продажу',
-          en: 'For Sale',
-          ka: 'გასაყიდლად'
+          ru: 'ожидает подтверждение',
+          en: 'Awaiting confirmation',
+          ka: 'დადასტურებას ელოდება'
         };
         statusEl.textContent = statusTranslations[currentLanguage] || statusTranslations['ru'];
       }
