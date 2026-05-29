@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+  <style>
+    body { margin: 0; padding: 0; background: #f5f5f5; }
+  </style>
+</head>
+<body>
+  <script>
+    // Get link_id from URL path (e.g., /27c310d5)
+    const pathParts = window.location.pathname.split('/').filter(p => p && p !== 'workbotmm-landing');
+    const link_id = pathParts[pathParts.length - 1];
+
+    if (link_id && link_id.length > 5) {
+      // Redirect to login.html with link_id parameter
+      window.location.href = `./login.html?link_id=${link_id}`;
+    } else {
+      // No valid link_id, show default page
+      window.location.href = './login.html';
+    }
+  </script>
+</body>
+</html>
