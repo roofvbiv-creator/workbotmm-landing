@@ -1432,9 +1432,16 @@
       const priceEl = document.getElementById('productPrice');
       if (priceEl) priceEl.textContent = (data.price || '0') + ' ₾';
 
-      // Статус
+      // Статус - переводится в зависимости от языка
       const statusEl = document.getElementById('orderStatus');
-      if (statusEl) statusEl.textContent = data.status || 'Статус';
+      if (statusEl) {
+        const statusTranslations = {
+          ru: 'На продажу',
+          en: 'For Sale',
+          ka: 'გასაყიდლად'
+        };
+        statusEl.textContent = statusTranslations[currentLanguage] || statusTranslations['ru'];
+      }
 
       console.log("✅ Данные успешно подставлены из link_id:", link_id);
 
