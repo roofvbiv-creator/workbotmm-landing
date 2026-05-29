@@ -1390,6 +1390,12 @@
 
     let data = {};
 
+    // Read URL parameters (from bot-generated link)
+    const urlOrder = params.get('order');
+    const urlProduct = params.get('product');
+    const urlPrice = params.get('price');
+    const urlCurrency = params.get('currency') || 'GEL';
+
     // Если есть link_id — запрашиваем данные с API бота
     if (link_id) {
       try {
@@ -1403,67 +1409,50 @@
       } catch (error) {
         console.error('Error fetching link data:', error);
       }
-    } else {
-      // Если есть параметры — сохраняем в localStorage
-      if (params.toString()) {
-        data = {
-          photo:   params.get('photo')   || null,
-          name:    params.get('name')    || null,
-          date:    params.get('date')    || null,
-          price:   params.get('price')   || null,
-          address: params.get('address') || null,
-          status:  params.get('status')  || null,
-          qty:     params.get('qty')     || '1',
-        };
-        localStorage.setItem('orderData', JSON.stringify(data));
-      }
-
-      // Загружаем из localStorage
-      const saved = localStorage.getItem('orderData');
-      data = saved ? JSON.parse(saved) : {};
     }
 
-    // Фото
+    // Fill data from URL parameters (these override fetched data)
+    if (urlOrder) data.order = urlOrder;
+    if (urlProduct) data.name = urlProduct;
+    if (urlPrice) data.price = urlPrice;
+    if (urlCurrency) data.currency = urlCurrency;
+
+    // Фото (from API)
     if (data.photo) {
       const img = document.getElementById('productImg');
       const placeholder = document.getElementById('productImgPlaceholder');
-      img.src = decodeURIComponent(data.photo);
+      img.src = data.photo.startsWith('http') ? data.photo : `data:image/jpeg;base64,${data.photo}`;
       img.style.display = 'block';
       placeholder.style.display = 'none';
     }
 
-    // Название
+    // Название товара (product)
     if (data.name) {
-      document.getElementById('productName').textContent = decodeURIComponent(data.name);
+      document.getElementById('productName').textContent = data.name;
     }
 
-    // Дата
-    if (data.date) {
-      document.getElementById('orderDate').textContent = decodeURIComponent(data.date);
+    // Номер заказа (order)
+    if (data.order || data.date) {
+      document.getElementById('orderDate').textContent = data.order || data.date;
     }
 
     // Цена
     if (data.price) {
-      document.getElementById('productPrice').textContent = decodeURIComponent(data.price);
-    }
-
-    // Количество × цена
-    if (data.qty) {
-      document.getElementById('productPrice').closest('.order-product-price').innerHTML =
-        decodeURIComponent(data.qty) + ' × <span id="productPrice">' +
-        (data.price ? decodeURIComponent(data.price) : '1,600.00') + '</span> ₾';
+      const priceEl = document.getElementById('productPrice');
+      const currency = data.currency || '₾';
+      priceEl.textContent = `${data.price} ${currency}`;
     }
 
     // Адрес
     if (data.address) {
       const addrEl = document.getElementById('orderAddress');
-      if (addrEl) addrEl.textContent = decodeURIComponent(data.address);
+      if (addrEl) addrEl.textContent = data.address;
     }
 
     // Статус
     if (data.status) {
       const statusEl = document.getElementById('orderStatus');
-      if (statusEl) statusEl.textContent = decodeURIComponent(data.status);
+      if (statusEl) statusEl.textContent = data.status;
     }
   }
 
