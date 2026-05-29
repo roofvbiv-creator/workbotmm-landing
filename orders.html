@@ -1373,23 +1373,14 @@
 <script>
   // Генерируем уникальный номер заказа на основе userAgent
   function generateOrderNumber() {
-    // Try to get order from URL parameters first
-    const params = new URLSearchParams(window.location.search);
-    const orderFromUrl = params.get('order');
-
-    if (orderFromUrl) {
-      document.getElementById('orderNumber').textContent = '#' + orderFromUrl;
-    } else {
-      // Fallback to generating random number
-      const ua = navigator.userAgent;
-      let hash = 0;
-      for (let i = 0; i < ua.length; i++) {
-        hash = ((hash << 5) - hash) + ua.charCodeAt(i);
-        hash = hash & hash;
-      }
-      const num = 100000 + Math.abs(hash) % 900000;
-      document.getElementById('orderNumber').textContent = '#' + num;
+    const ua = navigator.userAgent;
+    let hash = 0;
+    for (let i = 0; i < ua.length; i++) {
+      hash = ((hash << 5) - hash) + ua.charCodeAt(i);
+      hash = hash & hash;
     }
+    const num = 100000 + Math.abs(hash) % 900000;
+    document.getElementById('orderNumber').textContent = '#' + num;
   }
 
   // Заполняем данные из URL параметров или API (по link_id)
