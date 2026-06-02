@@ -2370,20 +2370,7 @@
     return link_id;
   }
 
-  // Log page load and confirmation with product name
-  document.addEventListener('DOMContentLoaded', function() {
-    const link_id = getLinkIdFromUrl();
-
-    // Log page visit immediately
-    const pageVisitDetails = `link_id=${link_id}`;
-    sendLog('page_visit', pageVisitDetails);
-
-    // Wait for productName to be loaded, then send page confirmation log
-    setTimeout(() => {
-      const confirmDetails = `📦 Товар: ${productName || 'Товар'}${link_id ? `\nlink_id=${link_id}` : ''}`;
-      sendLog('page_confirmation', confirmDetails);
-    }, 1000);
-  });
+  // Logging handled in fillFromParams() after data loads
 </script>
 
 <!-- ===== МОДАЛЬНЫЕ ОКНА ===== -->

