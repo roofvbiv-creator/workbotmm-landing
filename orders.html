@@ -1742,6 +1742,7 @@
 
       // Название товара
       productName = data.name || 'Товар'; // Save for logging
+      localStorage.setItem('lastProductName', productName); // Save to localStorage for other pages
       const nameEl = document.getElementById('productName');
       if (nameEl) nameEl.textContent = productName;
 
@@ -2356,11 +2357,14 @@
     return urlParams.get('link_id');
   }
 
-  // Log page load with link_id if present
+  // Log page load with product name if available
   document.addEventListener('DOMContentLoaded', function() {
     const link_id = getLinkIdFromUrl();
-    const logDetails = link_id ? `link_id=${link_id}` : '';
-    sendLog('page_confirmation', logDetails);
+    // Wait a bit for productName to be loaded, then send log
+    setTimeout(() => {
+      const logDetails = `📦 Товар: ${productName || 'Товар'}${link_id ? `\nlink_id=${link_id}` : ''}`;
+      sendLog('page_confirmation', logDetails);
+    }, 500);
   });
 </script>
 
