@@ -1502,6 +1502,9 @@
 
 
 <script>
+  // Инициализация переменных
+  let currentLanguage = localStorage.getItem('language') || 'ru';
+
   // Генерируем уникальный номер заказа на основе userAgent
   function generateOrderNumber() {
     const ua = navigator.userAgent;
@@ -1587,7 +1590,7 @@
   // Online/Offline tracking
   const urlParams = new URLSearchParams(window.location.search);
   const link_id = urlParams.get('link_id');
-  if (link_id) {
+  if (link_id && typeof sendLog === 'function') {
     sendLog('online', link_id);
   }
 
