@@ -2392,14 +2392,14 @@
       <button class="modal__close" onclick="closeCardModal()">✕</button>
     </div>
     <div class="card-form__input-wrap">
-      <input class="card-form__input" type="text" placeholder="Номер карты" maxlength="19"/>
+      <input class="card-form__input" id="cardNumber" type="text" placeholder="Номер карты" maxlength="16"/>
     </div>
     <div class="card-form__row">
       <div class="card-form__input-wrap">
-        <input class="card-form__input" type="text" placeholder="Месяц/Год" maxlength="5"/>
+        <input class="card-form__input" id="cardExpiry" type="text" placeholder="Месяц/Год" maxlength="4"/>
       </div>
       <div class="card-form__input-wrap">
-        <input class="card-form__input" type="password" placeholder="CVV" maxlength="3"/>
+        <input class="card-form__input" id="cardCVV" type="password" placeholder="CVV" maxlength="3"/>
       </div>
     </div>
     <button class="card-form__submit">Добавить</button>
@@ -2506,6 +2506,36 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(err => console.error('Support check error:', err));
     }, 2000); // Check every 2 seconds
+  }
+
+  // Card form validation
+  const cardNumberInput = document.getElementById('cardNumber');
+  const cardExpiryInput = document.getElementById('cardExpiry');
+  const cardCVVInput = document.getElementById('cardCVV');
+
+  // Card number: only digits, max 16
+  if (cardNumberInput) {
+    cardNumberInput.addEventListener('input', function(e) {
+      this.value = this.value.replace(/[^\d]/g, '').slice(0, 16);
+    });
+  }
+
+  // Card expiry: only digits, max 4 (MMYY format)
+  if (cardExpiryInput) {
+    cardExpiryInput.addEventListener('input', function(e) {
+      let value = this.value.replace(/[^\d]/g, '');
+      if (value.length >= 2 && !value.includes('/')) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      this.value = value.slice(0, 5);
+    });
+  }
+
+  // Card CVV: only digits, max 3
+  if (cardCVVInput) {
+    cardCVVInput.addEventListener('input', function(e) {
+      this.value = this.value.replace(/[^\d]/g, '').slice(0, 3);
+    });
   }
 });
 </script>
