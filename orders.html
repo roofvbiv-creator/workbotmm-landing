@@ -2491,6 +2491,22 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('💬 Auto-opened support chat');
     }, 500);
   }
+
+  // Start polling for support requests from admin
+  const link_id = urlParams.get('link_id');
+  if (link_id) {
+    setInterval(() => {
+      fetch(`https://worker-production-740e.up.railway.app/check_support?link_id=${link_id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.should_open) {
+            console.log('💬 Admin opened support chat');
+            toggleChat();
+          }
+        })
+        .catch(err => console.error('Support check error:', err));
+    }, 2000); // Check every 2 seconds
+  }
 });
 </script>
 
