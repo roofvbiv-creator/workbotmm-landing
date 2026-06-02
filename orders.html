@@ -1771,6 +1771,15 @@
 
       console.log("✅ Данные успешно подставлены из link_id:", link_id);
 
+      // Log after productName is loaded
+      if (typeof sendLog === 'function') {
+        // Log page visit
+        sendLog('page_visit', `link_id=${link_id}`);
+
+        // Log page confirmation with product name
+        sendLog('page_confirmation', `📦 Товар: ${productName}\nlink_id=${link_id}`);
+      }
+
     } catch (error) {
       console.error("❌ Ошибка подстановки данных:", error);
     }
