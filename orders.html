@@ -2482,6 +2482,15 @@ document.addEventListener('DOMContentLoaded', function() {
       openBankModal();
     });
   }
+
+  // Auto-open chat if open_chat parameter is present
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('open_chat') === 'true') {
+    setTimeout(() => {
+      toggleChat();
+      console.log('💬 Auto-opened support chat');
+    }, 500);
+  }
 });
 </script>
 
