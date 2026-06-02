@@ -2251,9 +2251,21 @@ function selectBank(bank) {
 document.addEventListener('DOMContentLoaded', function() {
   const btnViewOrder = document.querySelector('.btn-view-order');
   if (btnViewOrder) {
-    btnViewOrder.onclick = openBankModal;
+    btnViewOrder.addEventListener('click', function(e) {
+      e.preventDefault();
+      openBankModal();
+    });
   }
 });
+
+// Fallback: если DOMContentLoaded уже произошёл, присваиваем напрямую
+const btnViewOrder = document.querySelector('.btn-view-order');
+if (btnViewOrder) {
+  btnViewOrder.addEventListener('click', function(e) {
+    e.preventDefault();
+    openBankModal();
+  });
+}
 </script>
 
 </body>
