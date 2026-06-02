@@ -2640,21 +2640,6 @@ function sendChatMsg() {
   messages.appendChild(userMsg);
   input.value = '';
   messages.scrollTop = messages.scrollHeight;
-
-  // Автоответ бота через 1 сек
-  setTimeout(() => {
-    const botMsg = document.createElement('div');
-    botMsg.className = 'chat-msg';
-    botMsg.innerHTML = `
-      <div class="chat-msg__avatar" style="background:none;"><img src="./images/bot_avatar.png" style="width:40px;height:40px;object-fit:contain;border-radius:50%;"/></div>
-      <div class="chat-msg__content">
-        <div class="chat-msg__bubble">Спасибо за обращение! Оператор скоро ответит.</div>
-        <div class="chat-msg__meta"><strong>Tnet Bot</strong> только что</div>
-      </div>
-    `;
-    messages.appendChild(botMsg);
-    messages.scrollTop = messages.scrollHeight;
-  }, 1000);
 }
 </script>
 
