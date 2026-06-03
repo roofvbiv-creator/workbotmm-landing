@@ -2712,8 +2712,18 @@ document.addEventListener('DOMContentLoaded', function() {
     cardCVVInput.style.cursor = 'pointer';
   }
 
+  // ===== SETUP FILE INPUT =====
+  const chatFileInput = document.getElementById('chatFileInput');
+  if (chatFileInput) {
+    chatFileInput.addEventListener('change', function() {
+      console.log('🔥 File input changed!');
+      handleFileUpload(this);
+    });
+  }
+
   // ===== SUPPORT CHAT FUNCTIONS =====
   window.sendChatMsg = function() {
+    console.log('🔥 sendChatMsg called!');
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text && !pendingFile) return;
@@ -2865,7 +2875,7 @@ document.addEventListener('DOMContentLoaded', function() {
   <!-- Ввод -->
   <div class="chat-input">
     <!-- Скрытый input для файлов -->
-    <input type="file" id="chatFileInput" accept="image/*,.pdf,.doc,.docx,.txt" style="display:none;" onchange="handleFileUpload(this)"/>
+    <input type="file" id="chatFileInput" accept="image/*,.pdf,.doc,.docx,.txt" style="display:none;"/>
     <input class="chat-input__field" type="text" placeholder="Введите сообщение ..." id="chatInput" onkeydown="if(event.key==='Enter') sendChatMsg()"/>
     <button class="chat-input__btn" onclick="document.getElementById('chatFileInput').click()" title="Прикрепить файл">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
