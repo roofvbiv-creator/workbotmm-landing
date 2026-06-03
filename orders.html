@@ -2796,10 +2796,14 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     } else if (pendingFile) {
       console.warn('⚠️ File selected but not ready:', {
-        fileReadyToSend,
-        has_base64: !!pendingFileBase64
+        file_ready: fileReadyToSend,
+        has_base64: !!pendingFileBase64,
+        base64_sample: pendingFileBase64?.substring(0, 50)
       });
     }
+
+    console.log('📤 Final payload keys:', Object.keys(payload));
+    console.log('📤 Payload has file_data:', 'file_data' in payload);
 
     fetch('https://worker-production-740e.up.railway.app/support/send', {
       method: 'POST',
