@@ -2789,6 +2789,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleChat() {
   const win = document.getElementById('chatWindow');
   win.classList.toggle('open');
+
+  // Start polling for support messages when chat opens
+  startSupportChatPolling();
 }
 
 function minimizeChat() {
@@ -2966,12 +2969,6 @@ function startSupportChatPolling() {
   }, 2000); // Poll every 2 seconds
 }
 
-// Start polling when page loads and chat is opened
-const originalToggleChat = toggleChat;
-function toggleChat() {
-  originalToggleChat();
-  startSupportChatPolling();
-}
 </script>
 
 </body>
