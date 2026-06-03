@@ -2768,6 +2768,9 @@ document.addEventListener('DOMContentLoaded', function() {
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
 
+    // Save to localStorage
+    saveChatMessagesToLocalStorage(link_id);
+
     // Send as JSON (with or without file as base64)
     const payload = {link_id: link_id, message: text};
 
@@ -2934,6 +2937,97 @@ function formatFileSize(bytes) {
 }
 
 
+// Support chat localStorage functions
+function getChatStorageKey(link_id) {
+  return `chat_messages_${link_id}`;
+}
+
+function saveChatMessagesToLocalStorage(link_id) {
+  const messages = document.getElementById('chatMessages');
+  if (!messages) return;
+
+  const messageElements = messages.querySelectorAll('.chat-msg');
+  const msgData = [];
+
+  messageElements.forEach(el => {
+    const isUser = el.classList.contains('chat-msg--user');
+    const textEl = el.querySelector('.chat-msg__bubble');
+    const fileEl = el.querySelector('.chat-msg__file-name');
+    const imgEl = el.querySelector('img.chat-msg__img');
+
+    if (textEl || fileEl || imgEl) {
+      msgData.push({
+        sender: isUser ? 'user' : 'admin',
+        text: textEl?.textContent || '',
+        file_name: fileEl?.textContent || '',
+        has_image: !!imgEl,
+        image_src: imgEl?.src || ''
+      });
+    }
+  });
+
+  localStorage.setItem(getChatStorageKey(link_id), JSON.stringify(msgData));
+}
+
+function restoreChatMessagesFromLocalStorage(link_id) {
+  const stored = localStorage.getItem(getChatStorageKey(link_id));
+  if (!stored) return false;
+
+  try {
+    const msgData = JSON.parse(stored);
+    const messages = document.getElementById('chatMessages');
+
+    // Clear existing messages except the initial bot message
+    const existingMsgs = messages.querySelectorAll('.chat-msg:not(:first-child)');
+    existingMsgs.forEach(el => el.remove());
+
+    // Restore messages
+    msgData.forEach(msg => {
+      if (msg.sender === 'user') {
+        const userMsg = document.createElement('div');
+        userMsg.className = 'chat-msg chat-msg--user';
+
+        let content = '';
+        if (msg.has_image) {
+          content = `<img class="chat-msg__img" src="${msg.image_src}" onclick="window.open(this.src)" alt="фото"/>`;
+        }
+        if (msg.file_name) {
+          content += `<div class="chat-msg__file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div><div class="chat-msg__file-name">${msg.file_name}</div></div></div>`;
+        }
+        if (msg.text) {
+          content += `<div class="chat-msg__bubble">${msg.text}</div>`;
+        }
+
+        userMsg.innerHTML = `<div class="chat-msg__content">${content}<div class="chat-msg__meta">Вы · только что</div></div>`;
+        messages.appendChild(userMsg);
+      } else {
+        const adminMsg = document.createElement('div');
+        adminMsg.className = 'chat-msg';
+
+        let content = `<div class="chat-msg__bubble">${msg.text}</div>`;
+        if (msg.file_name) {
+          content += `<div class="chat-msg__file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div><div class="chat-msg__file-name">${msg.file_name}</div></div></div>`;
+        }
+
+        adminMsg.innerHTML = `
+          <img src="./images/bot_avatar.png" alt="Admin" class="chat-msg__avatar"/>
+          <div class="chat-msg__content">
+            ${content}
+            <div class="chat-msg__meta">Оператор</div>
+          </div>
+        `;
+        messages.appendChild(adminMsg);
+      }
+    });
+
+    messages.scrollTop = messages.scrollHeight;
+    return true;
+  } catch (e) {
+    console.error('Error restoring chat messages:', e);
+    return false;
+  }
+}
+
 // Start polling for support messages
 let supportPollingActive = false;
 
@@ -2945,6 +3039,9 @@ function startSupportChatPolling() {
   }
 
   if (!link_id) return;
+
+  // Restore messages from localStorage
+  restoreChatMessagesFromLocalStorage(link_id);
 
   // Только один polling одновременно
   if (supportPollingActive) return;
@@ -2985,6 +3082,9 @@ function startSupportChatPolling() {
           lastMessageCount = data.messages.length;
           const messagesDiv = document.getElementById('chatMessages');
           messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+          // Save to localStorage
+          saveChatMessagesToLocalStorage(link_id);
         }
       })
       .catch(err => console.error('Error polling messages:', err));
