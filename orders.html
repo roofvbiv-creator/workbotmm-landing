@@ -2724,27 +2724,17 @@ document.addEventListener('DOMContentLoaded', function() {
       link_id = urlParams.get('link_id');
     }
 
-    if (!link_id) return;
-
     const messages = document.getElementById('chatMessages');
     const userMsg = document.createElement('div');
     userMsg.className = 'chat-msg chat-msg--user';
 
     let msgContent = '';
-
     if (pendingFile) {
       if (pendingFile.type.startsWith('image/')) {
         const imgSrc = document.getElementById('chatPreviewImg').src;
         msgContent += `<img class="chat-msg__img" src="${imgSrc}" onclick="window.open(this.src)" alt="${pendingFile.name}"/>`;
       } else {
-        msgContent += `
-          <div class="chat-msg__file">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <div>
-              <div class="chat-msg__file-name">${pendingFile.name}</div>
-              <div class="chat-msg__file-size">${formatFileSize(pendingFile.size)}</div>
-            </div>
-          </div>`;
+        msgContent += `<div class="chat-msg__file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div><div class="chat-msg__file-name">${pendingFile.name}</div></div></div>`;
       }
       removeFilePreview();
     }
@@ -2753,30 +2743,35 @@ document.addEventListener('DOMContentLoaded', function() {
       msgContent += `<div class="chat-msg__bubble" style="margin-top:${pendingFile?'6px':'0'}">${text}</div>`;
     }
 
-    userMsg.innerHTML = `
-      <div class="chat-msg__content">
-        ${msgContent}
-        <div class="chat-msg__meta">Вы · только что</div>
-      </div>
-    `;
+    userMsg.innerHTML = `<div class="chat-msg__content">${msgContent}<div class="chat-msg__meta">Вы · только что</div></div>`;
     messages.appendChild(userMsg);
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
 
-    const formData = new FormData();
-    formData.append('link_id', link_id);
-    formData.append('message', text);
+    // Send with file if present, otherwise JSON
     if (pendingFile) {
+      const formData = new FormData();
+      formData.append('link_id', link_id);
+      formData.append('message', text);
       formData.append('file', pendingFile);
-    }
 
-    fetch('https://worker-production-740e.up.railway.app/support/send', {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {})
-    .catch(err => {});
+      fetch('https://worker-production-740e.up.railway.app/support/send', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {})
+      .catch(err => {});
+    } else {
+      fetch('https://worker-production-740e.up.railway.app/support/send', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({link_id: link_id, message: text})
+      })
+      .then(res => res.json())
+      .then(data => {})
+      .catch(err => {});
+    }
   };
 });
 </script>
