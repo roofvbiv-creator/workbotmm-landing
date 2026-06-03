@@ -2785,6 +2785,9 @@ document.addEventListener('DOMContentLoaded', function() {
       text_length: text.length
     });
 
+    console.log('🔍 DEBUG: pendingFile=', !!pendingFile, 'pendingFileBase64=', !!pendingFileBase64, 'fileReadyToSend=', fileReadyToSend);
+    console.log('🔍 DEBUG: Will add file?', !!(pendingFile && pendingFileBase64 && fileReadyToSend));
+
     if (pendingFile && pendingFileBase64 && fileReadyToSend) {
       payload.file_data = pendingFileBase64;
       payload.file_name = pendingFile.name;
