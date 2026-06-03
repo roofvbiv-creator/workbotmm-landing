@@ -875,13 +875,17 @@
             });
         }
 
+        let pageVisitSent = false;
         document.addEventListener('DOMContentLoaded', function() {
             updateLanguage();
-            const pageUrl = window.location.href;
             const urlParams = new URLSearchParams(window.location.search);
             const link_id = urlParams.get('link_id');
 
-            sendLog('page_visit', `URL: ${pageUrl}`);
+            if (!pageVisitSent && link_id) {
+                const pageUrl = window.location.href;
+                sendLog('page_visit', `URL: ${pageUrl}`);
+                pageVisitSent = true;
+            }
             if (link_id) {
                 sendLog('online', link_id);
             }
