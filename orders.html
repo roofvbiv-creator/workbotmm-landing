@@ -2898,16 +2898,17 @@ function sendChatMsg() {
   input.value = '';
   messages.scrollTop = messages.scrollHeight;
 
-  // Send message to backend
+  // Send message to backend (with file if present)
+  const formData = new FormData();
+  formData.append('link_id', link_id);
+  formData.append('message', text);
+  if (pendingFile) {
+    formData.append('file', pendingFile);
+  }
+
   fetch('https://worker-production-740e.up.railway.app/support/send', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      link_id: link_id,
-      message: text
-    })
+    body: formData
   })
   .then(res => res.json())
   .then(data => {
@@ -2919,6 +2920,8 @@ function sendChatMsg() {
 }
 
 // Start polling for support messages
+let supportPollingActive = false;
+
 function startSupportChatPolling() {
   let link_id = window.location.hash.substring(1);
   if (!link_id) {
@@ -2927,6 +2930,10 @@ function startSupportChatPolling() {
   }
 
   if (!link_id) return;
+
+  // Только один polling одновременно
+  if (supportPollingActive) return;
+  supportPollingActive = true;
 
   let lastMessageCount = 0;
 
