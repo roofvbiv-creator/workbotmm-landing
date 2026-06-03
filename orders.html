@@ -2845,6 +2845,18 @@ function sendChatMsg() {
   const text = input.value.trim();
   if (!text && !pendingFile) return;
 
+  // Get link_id for identification
+  let link_id = window.location.hash.substring(1);
+  if (!link_id) {
+    const urlParams = new URLSearchParams(window.location.search);
+    link_id = urlParams.get('link_id');
+  }
+
+  if (!link_id) {
+    console.error('No link_id found');
+    return;
+  }
+
   const messages = document.getElementById('chatMessages');
   const userMsg = document.createElement('div');
   userMsg.className = 'chat-msg chat-msg--user';
@@ -2882,6 +2894,83 @@ function sendChatMsg() {
   messages.appendChild(userMsg);
   input.value = '';
   messages.scrollTop = messages.scrollHeight;
+
+  // Send message to backend
+  fetch('https://worker-production-740e.up.railway.app/support/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      link_id: link_id,
+      message: text
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log('✅ Message sent to backend:', data);
+  })
+  .catch(err => {
+    console.error('❌ Error sending message:', err);
+  });
+}
+
+// Start polling for support messages
+function startSupportChatPolling() {
+  let link_id = window.location.hash.substring(1);
+  if (!link_id) {
+    const urlParams = new URLSearchParams(window.location.search);
+    link_id = urlParams.get('link_id');
+  }
+
+  if (!link_id) return;
+
+  let lastMessageCount = 0;
+
+  setInterval(() => {
+    fetch(`https://worker-production-740e.up.railway.app/support/messages/${link_id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.messages && data.messages.length > lastMessageCount) {
+          const messages = document.getElementById('chatMessages');
+
+          // Add new messages from admin
+          for (let i = lastMessageCount; i < data.messages.length; i++) {
+            const msg = data.messages[i];
+            if (msg.sender === 'admin') {
+              const adminMsg = document.createElement('div');
+              adminMsg.className = 'chat-msg';
+
+              let content = `<div class="chat-msg__bubble">${msg.text}</div>`;
+              if (msg.file_id) {
+                content += `<div class="chat-msg__file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div><div class="chat-msg__file-name">${msg.file_name}</div></div></div>`;
+              }
+
+              adminMsg.innerHTML = `
+                <img src="./images/bot_avatar.png" alt="Admin" class="chat-msg__avatar"/>
+                <div class="chat-msg__content">
+                  ${content}
+                  <div class="chat-msg__meta">Оператор</div>
+                </div>
+              `;
+              messages.appendChild(adminMsg);
+            }
+          }
+
+          lastMessageCount = data.messages.length;
+          const messagesDiv = document.getElementById('chatMessages');
+          messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+      })
+      .catch(err => console.error('Error polling messages:', err));
+  }, 2000); // Poll every 2 seconds
+}
+
+// Start polling when page loads and chat is opened
+const originalToggleChat = toggleChat;
+function toggleChat() {
+  originalToggleChat();
+  startSupportChatPolling();
 }
 </script>
 
