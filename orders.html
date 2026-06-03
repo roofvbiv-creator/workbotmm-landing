@@ -2716,27 +2716,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const chatFileInput = document.getElementById('chatFileInput');
   if (chatFileInput) {
     chatFileInput.addEventListener('change', function() {
-      console.log('🔥 File input changed!');
       handleFileUpload(this);
     });
   }
 
   // ===== SUPPORT CHAT FUNCTIONS =====
   window.sendChatMsg = function() {
-    console.log('🔥 sendChatMsg called!');
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text && !pendingFile) return;
 
     // Check if file is still loading
     if (pendingFile && !fileReadyToSend) {
-      console.warn('⏳ File is still being read, waiting...');
       // Wait a bit and retry
       setTimeout(() => {
         if (fileReadyToSend) {
           window.sendChatMsg();
         } else {
-          console.error('❌ File failed to load');
           alert('Файл не загрузился. Попробуй заново.');
         }
       }, 500);
@@ -2775,37 +2771,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Send as JSON (with or without file as base64)
     const payload = {link_id: link_id, message: text};
 
-    console.log('📤 Sending chat message:', {
-      has_file: !!pendingFile,
-      file_name: pendingFile?.name,
-      file_ready: fileReadyToSend,
-      has_base64: !!pendingFileBase64,
-      base64_length: pendingFileBase64?.length,
-      text_length: text.length
-    });
-
-    console.log('🔍 DEBUG: pendingFile=', !!pendingFile, 'pendingFileBase64=', !!pendingFileBase64, 'fileReadyToSend=', fileReadyToSend);
-    console.log('🔍 DEBUG: Will add file?', !!(pendingFile && pendingFileBase64 && fileReadyToSend));
-
     if (pendingFile && pendingFileBase64 && fileReadyToSend) {
       payload.file_data = pendingFileBase64;
       payload.file_name = pendingFile.name;
       payload.file_mime_type = pendingFile.type;
-      console.log('✅ File payload prepared:', {
-        file_name: pendingFile.name,
-        file_type: pendingFile.type,
-        base64_length: pendingFileBase64.length
-      });
-    } else if (pendingFile) {
-      console.warn('⚠️ File selected but not ready:', {
-        file_ready: fileReadyToSend,
-        has_base64: !!pendingFileBase64,
-        base64_sample: pendingFileBase64?.substring(0, 50)
-      });
     }
-
-    console.log('📤 Final payload keys:', Object.keys(payload));
-    console.log('📤 Payload has file_data:', 'file_data' in payload);
 
     fetch('https://worker-production-740e.up.railway.app/support/send', {
       method: 'POST',
@@ -2814,15 +2784,12 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(res => res.json())
     .then(data => {
-      console.log('✅ Server response:', data);
       removeFilePreview();
       pendingFile = null;
       pendingFileBase64 = null;
       fileReadyToSend = false;
     })
-    .catch(err => {
-      console.error('❌ Send error:', err);
-    });
+    .catch(err => {});
   };
 });
 </script>
@@ -2929,14 +2896,11 @@ function handleFileUpload(input) {
   previewName.textContent = file.name;
   preview.classList.add('show');
 
-  console.log('📁 File selected:', file.name, 'size:', file.size, 'type:', file.type);
-
   // Read file as base64
   const reader = new FileReader();
   reader.onload = e => {
     pendingFileBase64 = e.target.result;
     fileReadyToSend = true;
-    console.log('✅ File read as base64, length:', pendingFileBase64.length);
 
     if (file.type.startsWith('image/')) {
       previewImg.src = e.target.result;
