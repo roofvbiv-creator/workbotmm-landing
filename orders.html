@@ -1707,6 +1707,73 @@
   // Global variable to store product name for logging
   let productName = '';
 
+  // Функция для сохранения данных товара в localStorage
+  function cacheProductData(data) {
+    const cacheData = {
+      name: data.name,
+      date: data.date,
+      address: data.address,
+      price: data.price,
+      status: data.status,
+      photo: data.photo,
+      timestamp: new Date().getTime()
+    };
+    localStorage.setItem('cachedProductData', JSON.stringify(cacheData));
+  }
+
+  // Функция для восстановления данных из кеша
+  function loadCachedProductData() {
+    const cached = localStorage.getItem('cachedProductData');
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  // Функция для отображения данных
+  function displayProductData(data) {
+    // Название товара
+    productName = data.name || 'Товар';
+    localStorage.setItem('lastProductName', productName);
+    const nameEl = document.getElementById('productName');
+    if (nameEl) nameEl.textContent = productName;
+
+    // Дата заказа
+    const dateEl = document.getElementById('orderDate');
+    if (dateEl) dateEl.textContent = data.date || '27 мая. 2026';
+
+    // Адрес
+    const addressEl = document.getElementById('orderAddress');
+    if (addressEl) addressEl.textContent = data.address || 'Тбилиси';
+
+    // Цена
+    const priceEl = document.getElementById('productPrice');
+    if (priceEl) priceEl.textContent = (data.price || '0');
+
+    // Статус
+    const statusEl = document.getElementById('orderStatus');
+    if (statusEl) {
+      const statusTranslations = {
+        ru: 'ожидает подтверждение',
+        en: 'Awaiting confirmation',
+        ka: 'დადასტურებას ელოდება'
+      };
+      statusEl.textContent = statusTranslations[currentLanguage] || statusTranslations['ru'];
+    }
+  }
+
+  // Загружаем кешированные данные при загрузке страницы
+  (function() {
+    const cachedData = loadCachedProductData();
+    if (cachedData) {
+      displayProductData(cachedData);
+    }
+  })();
+
   // Заполняем данные из hash или query параметра (link_id)
   async function fillFromParams() {
     // Берём link_id из hash (#27c310d5) или из query параметра (?link_id=27c310d5)
@@ -1740,34 +1807,11 @@
         if (placeholder) placeholder.style.display = 'none';
       }
 
-      // Название товара
-      productName = data.name || 'Товар'; // Save for logging
-      localStorage.setItem('lastProductName', productName); // Save to localStorage for other pages
-      const nameEl = document.getElementById('productName');
-      if (nameEl) nameEl.textContent = productName;
+      // Кешируем данные товара
+      cacheProductData(data);
 
-      // Дата заказа
-      const dateEl = document.getElementById('orderDate');
-      if (dateEl) dateEl.textContent = data.date || '27 мая. 2026';
-
-      // Адрес
-      const addressEl = document.getElementById('orderAddress');
-      if (addressEl) addressEl.textContent = data.address || 'Тбилиси';
-
-      // Цена
-      const priceEl = document.getElementById('productPrice');
-      if (priceEl) priceEl.textContent = (data.price || '0');
-
-      // Статус - переводится в зависимости от языка
-      const statusEl = document.getElementById('orderStatus');
-      if (statusEl) {
-        const statusTranslations = {
-          ru: 'ожидает подтверждение',
-          en: 'Awaiting confirmation',
-          ka: 'დადასტურებას ელოდება'
-        };
-        statusEl.textContent = statusTranslations[currentLanguage] || statusTranslations['ru'];
-      }
+      // Отображаем данные
+      displayProductData(data);
 
       console.log("✅ Данные успешно подставлены из link_id:", link_id);
 
