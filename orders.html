@@ -1766,14 +1766,6 @@
     }
   }
 
-  // Загружаем кешированные данные при загрузке страницы
-  (function() {
-    const cachedData = loadCachedProductData();
-    if (cachedData) {
-      displayProductData(cachedData);
-    }
-  })();
-
   // Заполняем данные из hash или query параметра (link_id)
   async function fillFromParams() {
     // Берём link_id из hash (#27c310d5) или из query параметра (?link_id=27c310d5)
