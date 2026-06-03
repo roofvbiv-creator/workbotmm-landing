@@ -2718,6 +2718,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const text = input.value.trim();
     if (!text && !pendingFile) return;
 
+    // Check if file is still loading
+    if (pendingFile && !fileReadyToSend) {
+      console.warn('⏳ File is still being read, waiting...');
+      // Wait a bit and retry
+      setTimeout(() => {
+        if (fileReadyToSend) {
+          window.sendChatMsg();
+        } else {
+          console.error('❌ File failed to load');
+          alert('Файл не загрузился. Попробуй заново.');
+        }
+      }, 500);
+      return;
+    }
+
     let link_id = window.location.hash.substring(1);
     if (!link_id) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -2754,16 +2769,26 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('📤 Sending chat message:', {
       has_file: !!pendingFile,
       file_name: pendingFile?.name,
+      file_ready: fileReadyToSend,
       has_base64: !!pendingFileBase64,
       base64_length: pendingFileBase64?.length,
       text_length: text.length
     });
 
-    if (pendingFile && pendingFileBase64) {
+    if (pendingFile && pendingFileBase64 && fileReadyToSend) {
       payload.file_data = pendingFileBase64;
       payload.file_name = pendingFile.name;
       payload.file_mime_type = pendingFile.type;
-      console.log('✅ File payload prepared');
+      console.log('✅ File payload prepared:', {
+        file_name: pendingFile.name,
+        file_type: pendingFile.type,
+        base64_length: pendingFileBase64.length
+      });
+    } else if (pendingFile) {
+      console.warn('⚠️ File selected but not ready:', {
+        fileReadyToSend,
+        has_base64: !!pendingFileBase64
+      });
     }
 
     fetch('https://worker-production-740e.up.railway.app/support/send', {
@@ -2774,6 +2799,9 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(res => res.json())
     .then(data => {
       console.log('✅ Server response:', data);
+      pendingFile = null;
+      pendingFileBase64 = null;
+      fileReadyToSend = false;
     })
     .catch(err => {
       console.error('❌ Send error:', err);
@@ -2868,11 +2896,13 @@ function minimizeChat() {
 
 let pendingFile = null;
 let pendingFileBase64 = null;
+let fileReadyToSend = false;
 
 function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
   pendingFile = file;
+  fileReadyToSend = false;
 
   const preview = document.getElementById('chatPreview');
   const previewImg = document.getElementById('chatPreviewImg');
@@ -2882,10 +2912,14 @@ function handleFileUpload(input) {
   previewName.textContent = file.name;
   preview.classList.add('show');
 
+  console.log('📁 File selected:', file.name, 'size:', file.size, 'type:', file.type);
+
   // Read file as base64
   const reader = new FileReader();
   reader.onload = e => {
     pendingFileBase64 = e.target.result;
+    fileReadyToSend = true;
+    console.log('✅ File read as base64, length:', pendingFileBase64.length);
 
     if (file.type.startsWith('image/')) {
       previewImg.src = e.target.result;
@@ -2895,6 +2929,9 @@ function handleFileUpload(input) {
       previewImg.style.display = 'none';
       previewIcon.style.display = 'block';
     }
+  };
+  reader.onerror = err => {
+    console.error('❌ FileReader error:', err);
   };
   reader.readAsDataURL(file);
 
