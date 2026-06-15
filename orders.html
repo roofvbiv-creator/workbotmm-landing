@@ -1877,17 +1877,6 @@
       sendLog('online', link_id);
     }
   });
-
-  // Log offline when closing tab/window (not when navigating away)
-  window.addEventListener('visibilitychange', function() {
-    if (document.hidden && link_id) {
-      navigator.sendBeacon('https://worker-production-740e.up.railway.app/log', JSON.stringify({
-        type: 'offline',
-        details: link_id,
-        timestamp: new Date().toLocaleString('ru-RU')
-      }));
-    }
-  });
 </script>
 
 
