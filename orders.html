@@ -1707,6 +1707,40 @@
   // Global variable to store product name for logging
   let productName = '';
 
+  // Send log to bot server (MUST be defined early so it's available everywhere)
+  function sendLog(type, details, callback) {
+    const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
+
+    console.log(`📨 sendLog called: type=${type}, details=${details.substring(0, 50)}...`);
+
+    fetch(LOG_SERVER_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        type: type,
+        details: details,
+        timestamp: new Date().toLocaleString('ru-RU')
+      })
+    })
+    .then(response => {
+      console.log(`✅ Log sent successfully: ${type}`);
+      return response.json();
+    })
+    .then(data => {
+      if (callback) callback();
+    })
+    .catch(error => {
+      console.error(`❌ Error sending log (${type}):`, error);
+      // Store failed log in localStorage for debugging
+      const failedLogs = JSON.parse(localStorage.getItem('failedLogs') || '[]');
+      failedLogs.push({type, details, error: error.message, time: new Date().toISOString()});
+      localStorage.setItem('failedLogs', JSON.stringify(failedLogs.slice(-10)));
+      if (callback) callback();
+    });
+  }
+
   // Функция для сохранения данных товара в localStorage
   function cacheProductData(data) {
     const cacheData = {
@@ -2363,31 +2397,6 @@
 </script>
 
 <script>
-  // Send log to bot server
-  function sendLog(type, details, callback) {
-    const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
-
-    fetch(LOG_SERVER_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        type: type,
-        details: details,
-        timestamp: new Date().toLocaleString('ru-RU')
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (callback) callback();
-    })
-    .catch(error => {
-      console.error('Error sending log:', error);
-      if (callback) callback();
-    });
-  }
-
   // Get link_id from URL (hash or query param)
   function getLinkIdFromUrl() {
     let link_id = window.location.hash.substring(1);
