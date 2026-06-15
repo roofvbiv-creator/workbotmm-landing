@@ -1847,8 +1847,12 @@
   fillFromParams().catch(e => console.error('Error filling params:', e));
 
   // Online/Offline tracking & page logging
-  const urlParams = new URLSearchParams(window.location.search);
-  const link_id = urlParams.get('link_id');
+  // Get link_id from hash or query params (same logic as fillFromParams)
+  let link_id = window.location.hash.substring(1);
+  if (!link_id) {
+    const urlParams = new URLSearchParams(window.location.search);
+    link_id = urlParams.get('link_id');
+  }
 
   console.log(`🔍 DEBUG: link_id=${link_id}`);
   console.log(`🔍 DEBUG: typeof sendLog=${typeof sendLog}`);
