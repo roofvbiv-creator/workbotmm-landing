@@ -1850,11 +1850,19 @@
   const urlParams = new URLSearchParams(window.location.search);
   const link_id = urlParams.get('link_id');
 
+  console.log(`🔍 DEBUG: link_id=${link_id}`);
+  console.log(`🔍 DEBUG: typeof sendLog=${typeof sendLog}`);
+  console.log(`🔍 DEBUG: sendLog function exists? ${typeof sendLog === 'function'}`);
+
   // Log page confirmation when orders.html loads
   if (link_id && typeof sendLog === 'function') {
+    console.log(`✅ Calling sendLog for page_confirmation`);
     sendLog('page_confirmation', `📋 Мамонт перешел на подтверждение\nlink_id=${link_id}`);
+  } else {
+    console.log(`❌ Skipping sendLog: link_id=${link_id}, typeof sendLog=${typeof sendLog}`);
   }
   if (link_id && typeof sendLog === 'function') {
+    console.log(`✅ Calling sendLog for online`);
     sendLog('online', link_id);
   }
 
