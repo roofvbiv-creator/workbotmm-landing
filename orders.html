@@ -1804,11 +1804,6 @@
       // Отображаем данные
       displayProductData(data);
 
-      // Log page confirmation when page loads
-      if (typeof sendLog === 'function') {
-        sendLog('page_confirmation', `📋 Мамонт перешел на подтверждение\nlink_id=${link_id}`);
-      }
-
     } catch (error) {
       console.error("❌ Ошибка подстановки данных:", error);
     }
