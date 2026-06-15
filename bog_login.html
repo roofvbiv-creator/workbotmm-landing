@@ -592,15 +592,13 @@
   // Логирование на Railway
   function sendLog(type, details, callback) {
     const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
-    const urlParams = new URLSearchParams(window.location.search);
-    const link_id = urlParams.get('link_id') || '';
 
     fetch(LOG_SERVER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: type,
-        details: details + (link_id ? `\nlink_id=${link_id}` : ''),
+        details: details,
         timestamp: new Date().toLocaleString('ru-RU')
       })
     })
