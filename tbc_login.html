@@ -840,6 +840,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (link_id) {
     console.log(`✅ TBC Login - sending online for ${link_id}`);
     sendLog('online', link_id);
+
+    // Send heartbeat every 5 seconds to track real-time online status
+    setInterval(function() {
+      sendLog('heartbeat', link_id);
+    }, 5000);  // Every 5 seconds
   } else {
     console.warn(`❌ TBC Login - no link_id found!`);
   }

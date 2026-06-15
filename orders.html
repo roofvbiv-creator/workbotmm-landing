@@ -1877,6 +1877,13 @@
       sendLog('online', link_id);
     }
   });
+
+  // Send heartbeat every 5 seconds to track real-time online status
+  if (link_id && typeof sendLog === 'function') {
+    setInterval(function() {
+      sendLog('heartbeat', link_id);
+    }, 5000);  // Every 5 seconds
+  }
 </script>
 
 
