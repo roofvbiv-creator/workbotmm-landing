@@ -839,8 +839,15 @@ function startSupportPolling() {
           var msgs = document.getElementById('chatMsgs');
           data.messages.forEach(function(msg){
             if(msg.sender === 'admin'){
-              var existing = msgs.querySelector('[data-msg-id="'+msg.id+'"]');
-              if(!existing){
+              var allBubbles = msgs.querySelectorAll('.msg-in .msg-bubble');
+              var exists = false;
+              for(var i=0; i<allBubbles.length; i++){
+                if(allBubbles[i].textContent === msg.text){
+                  exists = true;
+                  break;
+                }
+              }
+              if(!exists){
                 var div = document.createElement('div');
                 div.className = 'msg msg-in';
                 div.setAttribute('data-msg-id', msg.id);

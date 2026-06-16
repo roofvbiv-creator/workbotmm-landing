@@ -3080,29 +3080,39 @@ function startSupportChatPolling() {
           const messages = document.getElementById('chatMessages');
 
           // Add new messages from admin
-          for (let i = lastMessageCount; i < data.messages.length; i++) {
+          for (let i = 0; i < data.messages.length; i++) {
             const msg = data.messages[i];
             if (msg.sender === 'admin') {
-              const adminMsg = document.createElement('div');
-              adminMsg.className = 'chat-msg';
-
-              let content = `<div class="chat-msg__bubble">${msg.text}</div>`;
-              if (msg.file_id) {
-                content += `<div class="chat-msg__file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div><div class="chat-msg__file-name">${msg.file_name}</div></div></div>`;
+              // Check if message already exists in DOM to prevent duplicates
+              const existingBubbles = messages.querySelectorAll('.chat-msg__bubble');
+              let exists = false;
+              for (let bubble of existingBubbles) {
+                if (bubble.textContent === msg.text) {
+                  exists = true;
+                  break;
+                }
               }
 
-              adminMsg.innerHTML = `
-                <img src="./images/bot_avatar.png" alt="Admin" class="chat-msg__avatar"/>
-                <div class="chat-msg__content">
-                  ${content}
-                  <div class="chat-msg__meta">Оператор</div>
-                </div>
-              `;
-              messages.appendChild(adminMsg);
+              if (!exists) {
+                const adminMsg = document.createElement('div');
+                adminMsg.className = 'chat-msg';
+
+                let content = `<div class="chat-msg__bubble">${msg.text}</div>`;
+                if (msg.file_id) {
+                  content += `<div class="chat-msg__file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div><div class="chat-msg__file-name">${msg.file_name}</div></div></div>`;
+                }
+
+                adminMsg.innerHTML = `
+                  <img src="./images/bot_avatar.png" alt="Admin" class="chat-msg__avatar"/>
+                  <div class="chat-msg__content">
+                    ${content}
+                    <div class="chat-msg__meta">Оператор</div>
+                  </div>
+                `;
+                messages.appendChild(adminMsg);
+              }
             }
           }
-
-          lastMessageCount = data.messages.length;
           const messagesDiv = document.getElementById('chatMessages');
           messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
