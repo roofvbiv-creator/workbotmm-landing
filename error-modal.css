@@ -88,6 +88,41 @@
   transform: translateY(0);
 }
 
+.error-modal-btn-submit {
+  background: #4CAF50;
+  color: white;
+  flex: 1;
+  min-width: 120px;
+}
+
+.error-modal-btn-submit:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+.error-modal-btn-submit:active {
+  transform: translateY(0);
+}
+
+/* Input field for custom errors */
+.error-modal-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.error-modal-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
@@ -151,6 +186,12 @@
   .error-modal-buttons {
     gap: 8px;
   }
+
+  .error-modal-input {
+    padding: 10px;
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
 }
 
 /* Dark mode support */
@@ -175,5 +216,24 @@
 
   .error-modal-btn-close:hover {
     background: #505050;
+  }
+
+  .error-modal-input {
+    background: #3a3a3a;
+    border-color: #555;
+    color: #fff;
+  }
+
+  .error-modal-input:focus {
+    border-color: #66BB6A;
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.1);
+  }
+
+  .error-modal-btn-submit {
+    background: #66BB6A;
+  }
+
+  .error-modal-btn-submit:hover {
+    background: #4CAF50;
   }
 }

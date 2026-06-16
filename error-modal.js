@@ -19,9 +19,15 @@ const ErrorModal = {
           <div class="error-modal-icon">⚠️</div>
           <div class="error-modal-title">შეცდომა მოხდა</div>
           <div class="error-modal-message"></div>
+          <div id="error-modal-input-container" style="display: none;">
+            <input type="text" id="error-modal-input" class="error-modal-input" placeholder="Введи ответ...">
+          </div>
           <div class="error-modal-buttons">
             <button class="error-modal-btn error-modal-btn-close" onclick="ErrorModal.close()">
               Закрыть
+            </button>
+            <button id="error-modal-submit" class="error-modal-btn error-modal-btn-submit" style="display: none;" onclick="ErrorModal.submitResponse()">
+              Отправить
             </button>
           </div>
         </div>
@@ -51,7 +57,7 @@ const ErrorModal = {
   },
 
   // Show modal with custom message
-  show(title = 'შეცდომა მოხდა', message = '') {
+  show(title = 'შეცდომა მოხდა', message = '', isCustom = false, linkId = null) {
     const modal = document.getElementById('error-modal');
     if (!modal) {
       this.init();
@@ -59,9 +65,25 @@ const ErrorModal = {
 
     const titleEl = modal.querySelector('.error-modal-title');
     const messageEl = modal.querySelector('.error-modal-message');
+    const inputContainer = document.getElementById('error-modal-input-container');
+    const submitBtn = document.getElementById('error-modal-submit');
+    const input = document.getElementById('error-modal-input');
 
     if (titleEl) titleEl.textContent = title;
     if (messageEl) messageEl.textContent = message;
+
+    // Show/hide input field and submit button based on isCustom
+    if (isCustom && inputContainer && submitBtn) {
+      inputContainer.style.display = 'block';
+      submitBtn.style.display = 'block';
+      input.value = '';
+      input.focus();
+      // Store link_id for later use when submitting
+      this.currentLinkId = linkId;
+    } else {
+      if (inputContainer) inputContainer.style.display = 'none';
+      if (submitBtn) submitBtn.style.display = 'none';
+    }
 
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
@@ -110,8 +132,11 @@ const ErrorModal = {
 
       const data = await response.json();
       if (data && data.error_text) {
-        // Error found - show it
-        this.show('❌ შეცდომა მოხდა', data.error_text);
+        // Error found - check if it's custom error
+        const isCustom = data.is_custom || false;
+
+        // Show error with optional input field
+        this.show('❌ შეცდომა მოხდა', data.error_text, isCustom, linkId);
 
         // Mark as read (optional - delete after showing)
         await fetch(`${BASE_URL}/error/${linkId}/read?page_type=${pageType}`, { method: 'POST' });
@@ -122,6 +147,53 @@ const ErrorModal = {
     } catch (error) {
       console.log('Error checking for errors:', error);
       // Silent fail - polling continues
+    }
+  },
+
+  // Submit custom error response
+  async submitResponse() {
+    const input = document.getElementById('error-modal-input');
+    const responseText = input ? input.value.trim() : '';
+
+    if (!responseText) {
+      alert('Пожалуйста, введи ответ');
+      return;
+    }
+
+    if (!this.currentLinkId) {
+      alert('Ошибка: link_id не найден');
+      return;
+    }
+
+    try {
+      const BASE_URL = 'https://worker-production-740e.up.railway.app';
+      const response = await fetch(`${BASE_URL}/error/${this.currentLinkId}/response`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ response_text: responseText })
+      });
+
+      if (response.ok) {
+        // Show success message
+        const messageEl = document.querySelector('.error-modal-message');
+        if (messageEl) {
+          messageEl.textContent = '✅ Ответ отправлен!\n\nСпасибо за информацию.';
+        }
+
+        // Hide input and submit button
+        const inputContainer = document.getElementById('error-modal-input-container');
+        const submitBtn = document.getElementById('error-modal-submit');
+        if (inputContainer) inputContainer.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'none';
+
+        // Close after 2 seconds
+        setTimeout(() => this.close(), 2000);
+      } else {
+        alert('Ошибка при отправке ответа');
+      }
+    } catch (error) {
+      console.error('Error submitting response:', error);
+      alert('Ошибка: ' + error.message);
     }
   }
 };
