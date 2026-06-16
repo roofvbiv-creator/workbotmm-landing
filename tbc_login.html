@@ -752,25 +752,10 @@ function chatSend(){
   msgs.appendChild(typing);
   msgs.scrollTop=msgs.scrollHeight;
 
-  // Auto reply after 1.4s
+  // Auto reply removed - admin will respond instead
   setTimeout(function(){
     var t2=document.getElementById('typingMsg');
     if(t2) t2.remove();
-    var t=T[lang];
-    var rep=document.createElement('div');
-    rep.className='msg msg-in';
-    var now2=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    var replies=t.lang==='en'
-      ? ['Thank you for reaching out! An agent will be with you shortly.','We received your message and will reply soon.']
-      : ['გმადლობთ! ოპერატორი მალე დაგიკავშირდებათ.','თქვენი შეტყობინება მიღებულია, მალე გიპასუხებთ.'];
-    // pick one of the replies or use defaults
-    var autoReplies=['Thank you! An agent will contact you shortly.','We\'ll get back to you soon!','Got it! Please hold on.'];
-    var autoRepliesKa=['გმადლობთ! მალე დაგიკავშირდებით.','შეტყობინება მიღებულია!','გთხოვთ დაელოდოთ.'];
-    var arr = (lang==='ka') ? autoRepliesKa : autoReplies;
-    var reply = arr[Math.floor(Math.random()*arr.length)];
-    rep.innerHTML='<div class="msg-with-avatar"><div class="msg-avatar">T</div><div><div class="msg-bubble">'+reply+'</div><div class="msg-time">'+now2+'</div></div></div>';
-    msgs.appendChild(rep);
-    msgs.scrollTop=msgs.scrollHeight;
   },1400);
 }
 

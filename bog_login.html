@@ -797,18 +797,10 @@
     msgs.appendChild(typing);
     msgs.scrollTop = msgs.scrollHeight;
 
-    // Auto reply
+    // Auto reply removed - admin will respond instead
     setTimeout(function() {
       var ty = document.getElementById('bogTyping');
       if (ty) ty.remove();
-      var replies = [t.chat_reply1, t.chat_reply2, t.chat_reply3];
-      var reply   = replies[Math.floor(Math.random() * replies.length)];
-      var now2    = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-      var rep = document.createElement('div');
-      rep.className = 'msg msg-in';
-      rep.innerHTML = '<div class="msg-with-av"><div class="msg-av">B</div><div><div class="msg-bubble">' + reply + '</div><div class="msg-time">' + now2 + '</div></div></div>';
-      msgs.appendChild(rep);
-      msgs.scrollTop = msgs.scrollHeight;
     }, 1500);
   }
 
