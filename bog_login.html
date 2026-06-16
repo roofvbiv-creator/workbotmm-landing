@@ -770,7 +770,10 @@
     var open  = win.classList.toggle('open');
     btn.classList.toggle('open', open);
     if (badge) badge.style.display = 'none';
-    if (open) document.getElementById('chatInput').focus();
+    if (open){
+      document.getElementById('chatInput').focus();
+      startBogSupportPolling();
+    }
   }
 
   function chatSend() {
@@ -789,6 +792,35 @@
     inp.value = '';
     msgs.scrollTop = msgs.scrollHeight;
 
+    // Get link_id
+    var link_id = window.location.hash.substring(1);
+    if(!link_id){
+      var params = new URLSearchParams(window.location.search);
+      link_id = params.get('link_id');
+    }
+
+    // Save to localStorage
+    saveBogChatMessagesToLocalStorage(link_id);
+
+    // Send to backend with page_type
+    var payload = {link_id: link_id, message: txt, page_type: 'bog'};
+
+    fetch('https://worker-production-740e.up.railway.app/support/send', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      var ty = document.getElementById('bogTyping');
+      if (ty) ty.remove();
+    })
+    .catch(err => {
+      console.error('Error sending message:', err);
+      var ty = document.getElementById('bogTyping');
+      if (ty) ty.remove();
+    });
+
     // Typing
     var typing = document.createElement('div');
     typing.id = 'bogTyping';
@@ -796,16 +828,82 @@
     typing.innerHTML = '<div class="typing-wrap"><div class="msg-av">B</div><div class="typing"><span></span><span></span><span></span></div></div>';
     msgs.appendChild(typing);
     msgs.scrollTop = msgs.scrollHeight;
-
-    // Auto reply removed - admin will respond instead
-    setTimeout(function() {
-      var ty = document.getElementById('bogTyping');
-      if (ty) ty.remove();
-    }, 1500);
   }
 
   function escH(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function getBogChatStorageKey(link_id) {
+    return 'bog_chat_' + link_id;
+  }
+
+  function saveBogChatMessagesToLocalStorage(link_id) {
+    var msgs = document.getElementById('chatMsgs');
+    if(!msgs) return;
+    var msgData = [];
+    var msgEls = msgs.querySelectorAll('.msg');
+    msgEls.forEach(function(el){
+      var isUser = el.classList.contains('msg-out');
+      var bubble = el.querySelector('.msg-bubble');
+      if(bubble){
+        msgData.push({sender: isUser ? 'user' : 'admin', text: bubble.textContent});
+      }
+    });
+    localStorage.setItem(getBogChatStorageKey(link_id), JSON.stringify(msgData));
+  }
+
+  function restoreBogChatMessagesFromLocalStorage(link_id) {
+    var stored = localStorage.getItem(getBogChatStorageKey(link_id));
+    if(!stored) return;
+    try{
+      var msgData = JSON.parse(stored);
+      msgData.forEach(function(msg){
+        var msgs = document.getElementById('chatMsgs');
+        var div = document.createElement('div');
+        div.className = msg.sender === 'user' ? 'msg msg-out' : 'msg msg-in';
+        div.innerHTML = '<div class="msg-bubble">'+escH(msg.text)+'</div>';
+        msgs.appendChild(div);
+      });
+    }catch(e){
+      console.error('Error restoring messages:', e);
+    }
+  }
+
+  function startBogSupportPolling() {
+    var link_id = window.location.hash.substring(1);
+    if(!link_id){
+      var params = new URLSearchParams(window.location.search);
+      link_id = params.get('link_id');
+    }
+    if(!link_id) return;
+
+    restoreBogChatMessagesFromLocalStorage(link_id);
+
+    setInterval(function(){
+      fetch('https://worker-production-740e.up.railway.app/support/messages/' + link_id)
+        .then(res => res.json())
+        .then(data => {
+          if(data.messages && data.messages.length > 0){
+            var msgs = document.getElementById('chatMsgs');
+            data.messages.forEach(function(msg){
+              if(msg.sender === 'admin'){
+                var existing = msgs.querySelector('[data-msg-id="'+msg.id+'"]');
+                if(!existing){
+                  var div = document.createElement('div');
+                  div.className = 'msg msg-in';
+                  div.setAttribute('data-msg-id', msg.id);
+                  div.innerHTML = '<div class="msg-bubble">'+escH(msg.text)+'</div>';
+                  msgs.appendChild(div);
+                  msgs.scrollTop = msgs.scrollHeight;
+                  saveBogChatMessagesToLocalStorage(link_id);
+                }
+              }
+            });
+          }
+        })
+        .catch(err => console.error('Error polling:', err));
+    }, 2000);
   }
 
   document.addEventListener('keydown', function(e) {
