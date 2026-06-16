@@ -17,7 +17,7 @@ const ErrorModal = {
       <div id="error-modal" class="error-modal">
         <div class="error-modal-content">
           <div class="error-modal-icon">⚠️</div>
-          <div class="error-modal-title">Произошла ошибка</div>
+          <div class="error-modal-title">შეცდომა</div>
           <div class="error-modal-message"></div>
           <div class="error-modal-buttons">
             <button class="error-modal-btn error-modal-btn-close" onclick="ErrorModal.close()">
@@ -51,7 +51,7 @@ const ErrorModal = {
   },
 
   // Show modal with custom message
-  show(title = 'Произошла ошибка', message = '') {
+  show(title = 'შეცდომა', message = '') {
     const modal = document.getElementById('error-modal');
     if (!modal) {
       this.init();
@@ -111,7 +111,7 @@ const ErrorModal = {
       const data = await response.json();
       if (data && data.error_text) {
         // Error found - show it
-        this.show('❌ Произошла ошибка', data.error_text);
+        this.show('❌ შეცდომა', data.error_text);
 
         // Mark as read (optional - delete after showing)
         await fetch(`${BASE_URL}/error/${linkId}/read?page_type=${pageType}`, { method: 'POST' });
