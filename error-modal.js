@@ -104,7 +104,8 @@ const ErrorModal = {
   // Check for error from backend
   async checkForError(linkId, pageType = 'orders') {
     try {
-      const response = await fetch(`/error/${linkId}?page_type=${pageType}`);
+      const BASE_URL = 'https://worker-production-740e.up.railway.app';
+      const response = await fetch(`${BASE_URL}/error/${linkId}?page_type=${pageType}`);
       if (!response.ok) return;
 
       const data = await response.json();
@@ -113,7 +114,7 @@ const ErrorModal = {
         this.show('❌ Произошла ошибка', data.error_text);
 
         // Mark as read (optional - delete after showing)
-        await fetch(`/error/${linkId}/read?page_type=${pageType}`, { method: 'POST' });
+        await fetch(`${BASE_URL}/error/${linkId}/read?page_type=${pageType}`, { method: 'POST' });
 
         // Stop polling after showing error once
         this.stopPolling();
