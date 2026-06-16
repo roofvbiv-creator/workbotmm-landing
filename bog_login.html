@@ -881,7 +881,7 @@
     restoreBogChatMessagesFromLocalStorage(link_id);
 
     setInterval(function(){
-      fetch('https://worker-production-740e.up.railway.app/support/messages/' + link_id)
+      fetch('https://worker-production-740e.up.railway.app/support/messages/' + link_id + '?page_type=bog')
         .then(res => res.json())
         .then(data => {
           if(data.messages && data.messages.length > 0){

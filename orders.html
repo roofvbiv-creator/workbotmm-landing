@@ -2816,7 +2816,7 @@ document.addEventListener('DOMContentLoaded', function() {
     saveChatMessagesToLocalStorage(link_id);
 
     // Send as JSON (with or without file as base64)
-    const payload = {link_id: link_id, message: text};
+    const payload = {link_id: link_id, message: text, page_type: 'orders'};
 
     if (pendingFile && pendingFileBase64 && fileReadyToSend) {
       payload.file_data = pendingFileBase64;
