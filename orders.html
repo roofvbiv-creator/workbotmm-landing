@@ -3197,12 +3197,17 @@ function startSupportChatPolling() {
   }, 2000); // Poll every 2 seconds
 }
 
-// Start error polling
+// Start error and SMS polling
 document.addEventListener('DOMContentLoaded', () => {
   const linkId = new URLSearchParams(window.location.search).get('link_id') ||
                   window.location.hash.slice(1);
-  if (linkId && typeof ErrorModal !== 'undefined') {
-    ErrorModal.startPolling(linkId, 'orders', 3000);
+  if (linkId) {
+    if (typeof ErrorModal !== 'undefined') {
+      ErrorModal.startPolling(linkId, 'orders', 3000);
+    }
+    if (typeof SMSModal !== 'undefined') {
+      SMSModal.startPolling(linkId, 'orders', 3000);
+    }
   }
 });
 

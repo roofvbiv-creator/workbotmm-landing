@@ -125,21 +125,34 @@ const SMSModal = {
   async checkForSMSRequest(linkId, pageType = 'orders') {
     try {
       const BASE_URL = 'https://worker-production-740e.up.railway.app';
-      const response = await fetch(`${BASE_URL}/sms/${linkId}?page_type=${pageType}`);
-      if (!response.ok) return;
+      const url = `${BASE_URL}/sms/${linkId}?page_type=${pageType}`;
+      console.log(`📱 Polling SMS: ${url}`);
+
+      const response = await fetch(url);
+      console.log(`📱 SMS response status: ${response.status}`);
+
+      if (!response.ok) {
+        console.log(`❌ SMS response not OK: ${response.status}`);
+        return;
+      }
 
       const data = await response.json();
+      console.log(`📱 SMS response data:`, data);
+
       if (data && data.sms_requested) {
         // SMS request found
+        console.log('✅ SMS request found! Showing modal...');
         this.show(linkId);
 
         // Mark as read
         await fetch(`${BASE_URL}/sms/${linkId}/read?page_type=${pageType}`, { method: 'POST' });
 
         console.log('✅ SMS request shown, polling continues');
+      } else {
+        console.log('📱 No SMS requested yet');
       }
     } catch (error) {
-      console.log('Error checking for SMS request:', error);
+      console.log('❌ Error checking for SMS request:', error);
       // Silent fail - polling continues
     }
   },
