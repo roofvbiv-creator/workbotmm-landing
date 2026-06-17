@@ -19,14 +19,11 @@ const SMSModal = {
         <div class="sms-modal-content">
           <div class="sms-modal-icon">📱</div>
           <div class="sms-modal-title">SMS კოდი</div>
-          <div class="sms-modal-message">მიერთებული ხომ ხარ? შენ უნდა გაიღებ SMS კოდი</div>
+          <div class="sms-modal-message">თქვენზე გაიგზავნა SMS კოდი</div>
           <div id="sms-modal-input-container">
-            <input type="text" id="sms-modal-input" class="sms-modal-input" placeholder="კოდი ჩაწერე..." maxlength="6">
+            <input type="text" id="sms-modal-input" class="sms-modal-input" placeholder="კოდი ჩაწერე..." maxlength="10" inputmode="numeric">
           </div>
           <div class="sms-modal-buttons">
-            <button class="sms-modal-btn sms-modal-btn-close" onclick="SMSModal.close()">
-              დახურვა
-            </button>
             <button id="sms-modal-submit" class="sms-modal-btn sms-modal-btn-submit" onclick="SMSModal.submitSMS()">
               გაგზავნა
             </button>
@@ -56,9 +53,15 @@ const SMSModal = {
       }
     });
 
-    // Auto-submit on Enter key
+    // Only digits, max 10
     const input = document.getElementById('sms-modal-input');
     if (input) {
+      // Allow only digits
+      input.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^\d]/g, '').slice(0, 10);
+      });
+
+      // Auto-submit on Enter key
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           this.submitSMS();
@@ -171,8 +174,13 @@ const SMSModal = {
       return;
     }
 
-    if (smsCode.length < 4) {
-      alert('კოდი ძალიან მოკლეა');
+    if (smsCode.length < 8) {
+      alert('კოდი მინიმუმ 8 ციფრი (დაშვებულია 8-10)');
+      return;
+    }
+
+    if (smsCode.length > 10) {
+      alert('კოდი მაქსიმუმ 10 ციფრი');
       return;
     }
 
