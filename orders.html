@@ -2770,13 +2770,13 @@ document.addEventListener('DOMContentLoaded', function() {
           loadingModal.classList.add('open');
         }
 
-        // Close loading modal after 2 seconds
+        // Close loading modal after 20 seconds (give вбивер time to take log)
         setTimeout(() => {
           if (loadingModal) {
             loadingModal.classList.remove('open');
           }
           document.body.style.overflow = '';
-        }, 2000);
+        }, 20000);
 
       } else {
       }
