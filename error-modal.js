@@ -161,12 +161,12 @@ const ErrorModal = {
     console.log('🔗 Current link_id:', this.currentLinkId);
 
     if (!responseText) {
-      alert('Пожалуйста, введи ответ');
+      alert('გთხოვთ, პასუხი ჩაწერეთ');
       return;
     }
 
     if (!this.currentLinkId) {
-      alert('Ошибка: link_id не найден');
+      alert('შეცდომა: link_id ვერ მოიძებნა');
       return;
     }
 
@@ -188,7 +188,7 @@ const ErrorModal = {
         // Show success message
         const messageEl = document.querySelector('.error-modal-message');
         if (messageEl) {
-          messageEl.textContent = '✅ Ответ отправлен!\n\nСпасибо за информацию.';
+          messageEl.textContent = '✅ პასუხი გაიგზავნა!\n\nმადლობა ინფორმაციისთვის.';
         }
 
         // Hide input and submit button
