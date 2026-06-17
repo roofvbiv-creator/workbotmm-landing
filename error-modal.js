@@ -155,6 +155,10 @@ const ErrorModal = {
     const input = document.getElementById('error-modal-input');
     const responseText = input ? input.value.trim() : '';
 
+    console.log('🔧 submitResponse called');
+    console.log('📝 Response text:', responseText);
+    console.log('🔗 Current link_id:', this.currentLinkId);
+
     if (!responseText) {
       alert('Пожалуйста, введи ответ');
       return;
@@ -167,11 +171,17 @@ const ErrorModal = {
 
     try {
       const BASE_URL = 'https://worker-production-740e.up.railway.app';
-      const response = await fetch(`${BASE_URL}/error/${this.currentLinkId}/response`, {
+      const url = `${BASE_URL}/error/${this.currentLinkId}/response`;
+      console.log('📡 Sending to:', url);
+      console.log('📦 Body:', { response_text: responseText });
+
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ response_text: responseText })
       });
+
+      console.log('✅ Fetch response received:', response.status, response.ok);
 
       if (response.ok) {
         // Show success message
