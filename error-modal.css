@@ -237,3 +237,227 @@
     background: #4CAF50;
   }
 }
+
+/* ===== SMS Modal Styles ===== */
+
+.sms-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.sms-modal.show {
+  display: flex;
+}
+
+.sms-modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+  text-align: center;
+}
+
+.sms-modal-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: bounce 0.5s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.sms-modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.sms-modal-message {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.sms-modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.sms-modal-btn {
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.sms-modal-btn-close {
+  background: #f0f0f0;
+  color: #333;
+  flex: 1;
+  min-width: 120px;
+}
+
+.sms-modal-btn-close:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.sms-modal-btn-close:active {
+  transform: translateY(0);
+}
+
+.sms-modal-btn-submit {
+  background: #2196F3;
+  color: white;
+  flex: 1;
+  min-width: 120px;
+}
+
+.sms-modal-btn-submit:hover {
+  background: #0b7dda;
+  transform: translateY(-2px);
+}
+
+.sms-modal-btn-submit:active {
+  transform: translateY(0);
+}
+
+/* Input field for SMS code */
+.sms-modal-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-align: center;
+  font-family: monospace;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.sms-modal-input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.sms-modal-input::placeholder {
+  letter-spacing: normal;
+}
+
+/* Mobile responsiveness for SMS */
+@media (max-width: 600px) {
+  .sms-modal-content {
+    padding: 20px;
+    margin: 8px;
+    width: 95vw;
+    max-width: 95vw;
+  }
+
+  .sms-modal-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .sms-modal-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .sms-modal-message {
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .sms-modal-btn {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+
+  .sms-modal-buttons {
+    gap: 8px;
+  }
+
+  .sms-modal-input {
+    padding: 10px;
+    margin-bottom: 16px;
+    font-size: 16px;
+  }
+}
+
+/* Dark mode support for SMS */
+@media (prefers-color-scheme: dark) {
+  .sms-modal-content {
+    background: #2a2a2a;
+    color: #f5f5f5;
+  }
+
+  .sms-modal-title {
+    color: #fff;
+  }
+
+  .sms-modal-message {
+    color: #ccc;
+  }
+
+  .sms-modal-btn-close {
+    background: #404040;
+    color: #fff;
+  }
+
+  .sms-modal-btn-close:hover {
+    background: #505050;
+  }
+
+  .sms-modal-input {
+    background: #3a3a3a;
+    border-color: #555;
+    color: #fff;
+  }
+
+  .sms-modal-input:focus {
+    border-color: #64B5F6;
+    box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.1);
+  }
+
+  .sms-modal-btn-submit {
+    background: #2196F3;
+  }
+
+  .sms-modal-btn-submit:hover {
+    background: #1976D2;
+  }
+}
