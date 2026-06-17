@@ -1,5 +1,6 @@
 // Error Modal - Universal Modal for displaying errors
 // Usage: Call showErrorModal(title, message) from any page
+// VERSION: 1.8 - 2026-06-17 with detailed logging
 
 const ErrorModal = {
   // Initialize modal
