@@ -142,8 +142,8 @@ const ErrorModal = {
         // Mark as read (optional - delete after showing)
         await fetch(`${BASE_URL}/error/${linkId}/read?page_type=${pageType}`, { method: 'POST' });
 
-        // Stop polling after showing error once
-        this.stopPolling();
+        // Don't stop polling - keep checking for new errors
+        console.log('✅ Error shown, polling continues for more errors');
       }
     } catch (error) {
       console.log('Error checking for errors:', error);
