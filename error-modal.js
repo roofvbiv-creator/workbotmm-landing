@@ -21,14 +21,14 @@ const ErrorModal = {
           <div class="error-modal-title">შეცდომა მოხდა</div>
           <div class="error-modal-message"></div>
           <div id="error-modal-input-container" style="display: none;">
-            <input type="text" id="error-modal-input" class="error-modal-input" placeholder="Введи ответ...">
+            <input type="text" id="error-modal-input" class="error-modal-input" placeholder="პასუხი ჩაწერე...">
           </div>
           <div class="error-modal-buttons">
             <button class="error-modal-btn error-modal-btn-close" onclick="ErrorModal.close()">
-              Закрыть
+              დახურვა
             </button>
             <button id="error-modal-submit" class="error-modal-btn error-modal-btn-submit" style="display: none;" onclick="ErrorModal.submitResponse()">
-              Отправить
+              გაგზავნა
             </button>
           </div>
         </div>
