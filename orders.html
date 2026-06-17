@@ -2529,8 +2529,8 @@
 </div>
 
 <!-- Loading Screen -->
-<div class="modal-overlay" id="loadingModal">
-  <div class="modal">
+<div class="modal-overlay" id="loadingModal" onclick="if(event.target === this) return false;">
+  <div class="modal" onclick="event.stopPropagation();">
     <div class="loading-container">
       <div class="loading-spinner"></div>
       <p class="loading-text">მუშავდება...</p>
