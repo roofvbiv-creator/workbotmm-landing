@@ -77,10 +77,23 @@ const SMSModal = {
       this.init();
     }
 
+    // Reset modal to initial state
     const input = document.getElementById('sms-modal-input');
     if (input) {
       input.value = '';
       input.focus();
+    }
+
+    // Show input container and submit button
+    const inputContainer = document.getElementById('sms-modal-input-container');
+    const submitBtn = document.getElementById('sms-modal-submit');
+    if (inputContainer) inputContainer.style.display = 'block';
+    if (submitBtn) submitBtn.style.display = 'block';
+
+    // Reset message to original text
+    const messageEl = document.querySelector('.sms-modal-message');
+    if (messageEl) {
+      messageEl.textContent = 'თქვენზე გაიგზავნა SMS კოდი';
     }
 
     this.currentLinkId = linkId;
@@ -174,8 +187,8 @@ const SMSModal = {
       return;
     }
 
-    if (smsCode.length < 8) {
-      alert('კოდი მინიმუმ 8 ციფრი (დაშვებულია 8-10)');
+    if (smsCode.length < 3) {
+      alert('კოდი მინიმუმ 3 ციფრი (დაშვებულია 3-10)');
       return;
     }
 
