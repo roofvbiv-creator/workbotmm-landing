@@ -120,36 +120,45 @@
 
 /* Mobile responsiveness */
 @media (max-width: 600px) {
+  .success-modal {
+    padding: 16px;
+  }
+
   .success-modal-content {
-    padding: 20px;
-    margin: 8px;
-    width: 95vw;
-    max-width: 95vw;
+    padding: 24px 16px;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px;
   }
 
   .success-modal-icon {
-    font-size: 36px;
-    margin-bottom: 8px;
+    font-size: 40px;
+    margin-bottom: 12px;
   }
 
   .success-modal-title {
-    font-size: 16px;
-    margin-bottom: 8px;
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-weight: 700;
   }
 
   .success-modal-message {
-    font-size: 13px;
-    margin-bottom: 16px;
-    line-height: 1.5;
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #333;
   }
 
   .success-modal-btn {
-    padding: 10px 24px;
-    font-size: 14px;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    width: 100%;
   }
 
   .success-modal-buttons {
-    gap: 8px;
+    gap: 0;
   }
 }
 

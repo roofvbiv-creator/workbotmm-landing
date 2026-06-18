@@ -18,8 +18,8 @@ const SuccessModal = {
       <div id="success-modal" class="success-modal">
         <div class="success-modal-content">
           <div class="success-modal-icon">✅</div>
-          <div class="success-modal-title">Успеха!</div>
-          <div class="success-modal-message">Ваша заявка успешно обработана. Спасибо!</div>
+          <div class="success-modal-title">ყურადღება</div>
+          <div class="success-modal-message">ჩვენ მივიღეთ თქვენი მოთხოვნა დასამუშავებლად, თანხა ჩაირიცხება 24 საათის განმავლობაში. გმადლობთ ჩვენი სერვისის გამოყენებისთვის!</div>
           <div class="success-modal-buttons">
             <button class="success-modal-btn success-modal-btn-close" onclick="SuccessModal.close()">
               დახურვა
