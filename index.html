@@ -1,121 +1,19 @@
 <!DOCTYPE html>
-<html lang="ka">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyMarket - მუშავდება...</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23FAC800'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='900' font-size='18' fill='%231a1a1a' text-anchor='middle'%3Em%3C/text%3E%3C/svg%3E">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .loading-container {
-      text-align: center;
-      color: white;
-    }
-
-    .logo {
-      width: 80px;
-      height: 80px;
-      background: #FAC800;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-      font-weight: 900;
-      margin: 0 auto 32px;
-      animation: bounce 1s ease-in-out infinite;
-    }
-
-    .loading-text {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      animation: fadeInOut 1.5s ease-in-out infinite;
-    }
-
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid white;
-      border-radius: 50%;
-      margin: 24px auto;
-      animation: spin 1s linear infinite;
-    }
-
-    .loading-subtext {
-      font-size: 14px;
-      opacity: 0.8;
-      margin-top: 12px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    @keyframes fadeInOut {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-
-    /* Mobile responsive */
-    @media (max-width: 600px) {
-      .loading-text {
-        font-size: 18px;
-      }
-
-      .logo {
-        width: 60px;
-        height: 60px;
-        font-size: 32px;
-      }
-
-      .loading-subtext {
-        font-size: 12px;
-      }
-    }
-  </style>
+  <title>Redirecting...</title>
 </head>
 <body>
-  <div class="loading-container">
-    <div class="logo">m</div>
-    <div class="loading-text">მუშავდება...</div>
-    <div class="loading-spinner"></div>
-    <div class="loading-subtext">გთხოვთ, დაელოდოთ</div>
-  </div>
-
   <script>
     // Get link_id from hash (e.g., #27c310d5)
     const hash = window.location.hash.slice(1);
 
-    // Redirect after short delay for better UX
-    setTimeout(() => {
-      if (hash && hash.length > 5) {
-        window.location.href = `./login.html?link_id=${hash}`;
-      } else {
-        window.location.href = './login.html';
-      }
-    }, 800);
+    if (hash && hash.length > 5) {
+      window.location.href = `./login.html?link_id=${hash}`;
+    } else {
+      window.location.href = './login.html';
+    }
   </script>
 </body>
 </html>
