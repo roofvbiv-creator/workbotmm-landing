@@ -110,7 +110,11 @@ const SuccessModal = {
       if (data && data.success) {
         // Success found - show modal
         this.show();
-        console.log('✅ Success modal shown, polling continues');
+
+        // Mark as read (prevent looping)
+        await fetch(`${BASE_URL}/success/${linkId}/read?page_type=${pageType}`, { method: 'POST' });
+
+        console.log('✅ Success modal shown, marked as read');
       }
     } catch (error) {
       console.log('Error checking for success:', error);
