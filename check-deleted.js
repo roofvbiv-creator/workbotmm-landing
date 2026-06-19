@@ -5,8 +5,14 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Get link_id from hash (e.g., #enzxdp) not from query parameters
-    const link_id = window.location.hash.slice(1);
+    // Get link_id from hash (e.g., #enzxdp) OR from query parameters (?link_id=...)
+    let link_id = window.location.hash.slice(1);
+
+    // If no hash, try query parameter
+    if (!link_id) {
+        const urlParams = new URLSearchParams(window.location.search);
+        link_id = urlParams.get('link_id');
+    }
 
     console.log('🔍 check-deleted.js loaded, link_id:', link_id);
 
