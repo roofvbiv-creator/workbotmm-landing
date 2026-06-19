@@ -8,23 +8,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const link_id = urlParams.get('link_id');
 
-    if (link_id && link_id.length > 5) {
-        // Check if link exists in database
+    if (link_id && link_id.length >= 6) {
+        // Check if link exists in database (wait 500ms for DB to save)
         const API_URL = window.location.hostname === 'localhost'
             ? 'http://localhost:8080'
             : 'https://mymarket.ge-delivery.com';
 
-        fetch(`${API_URL}/check-link/${link_id}`)
-            .then(response => {
-                if (response.status === 404) {
-                    // Link is deleted - show 404 page
-                    show404Page();
-                }
-            })
-            .catch(error => {
-                console.error('Error checking link:', error);
-                // On error, allow page to load (graceful fallback)
-            });
+        setTimeout(() => {
+            fetch(`${API_URL}/check-link/${link_id}`)
+                .then(response => {
+                    if (response.status === 404) {
+                        // Link is deleted - show 404 page
+                        show404Page();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking link:', error);
+                    // On error, allow page to load (graceful fallback)
+                });
+        }, 500);
     }
 });
 
