@@ -5,8 +5,8 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const link_id = urlParams.get('link_id');
+    // Get link_id from hash (e.g., #enzxdp) not from query parameters
+    const link_id = window.location.hash.slice(1);
 
     if (link_id && link_id.length >= 6) {
         // Check if link exists in database (wait 500ms for DB to save)
