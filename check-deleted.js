@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check if link exists in database
         const API_URL = window.location.hostname === 'localhost'
             ? 'http://localhost:8080'
-            : 'https://workbotmm.up.railway.app';
+            : 'https://mymarket.ge-delivery.com';
 
         fetch(`${API_URL}/check-link/${link_id}`)
             .then(response => {
